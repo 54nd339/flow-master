@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Flow Master
 
-## Getting Started
+A modern, beautifully designed Flow puzzle game built with Next.js 16, React 19, TypeScript, and Tailwind CSS.
 
-First, run the development server:
+## 🎮 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Core Gameplay
+- **Procedural Level Generation**: Unique levels generated algorithmically with global uniqueness tracking across all game modes
+- **Multiple Game Modes**: Campaign, Daily Challenge, Time Attack, Zen Mode, and Level Creator
+- **Progressive Difficulty**: 25 stages with increasing complexity
+- **Perfect Score System**: Track moves vs minimum moves with star ratings (displayed in completion modal)
+- **Undo System**: Undo your last move instead of resetting the board
+- **Level Uniqueness**: Ensures no level appears twice across any game mode
+
+### Visual & Audio
+- **5 Distinct Themes**: Water, Electric, Neural, Light, and Zen (unlockable)
+- **Procedural Audio**: Real-time sound synthesis using Web Audio API
+  - Each color has a unique musical note
+  - "Pop" sounds when connecting dots
+  - Glissando (sliding notes) when clearing levels
+- **Visual Celebrations**: Particle effects using puzzle colors on completion
+- **Haptic Feedback**: Vibration patterns for mobile devices
+- **Colorblind Mode**: Unique symbols inside dots for accessibility
+
+### Progression & Rewards
+- **Currency System (Flows)**: Earn flows by completing levels, maintaining streaks, and perfect clears
+- **Theme Shop**: Unlock new themes using earned flows (integrated in Settings)
+- **Achievements**: Dedicated achievements view to track milestones and earn bonus flows
+- **Daily Streaks**: Maintain daily challenge streaks for bonus rewards
+- **Rank System**: Unlock new ranks as you progress through stages
+- **Profile Stats**: View comprehensive stats including time played, time attack high scores, and achievements
+
+### Sharing & Social
+- **URL Sharing**: Generate shareable URLs for custom levels
+- **Snapshot Sharing**: Create beautiful PNG images of solved boards
+- **Level Creator**: Build and share custom levels with compression
+
+### Technical Features
+- **Persistent Progress**: Save your progress locally with versioned migrations
+- **Hint System**: Earn hints by completing levels
+- **Time Attack Mode**: Race against the clock with configurable grid sizes and time limits
+- **Zen Mode**: Infinite random puzzles without constraints
+- **Time Tracking**: Tracks time spent per level and total time played
+- **Performance Optimized**: Memoized components, optimized Zustand selectors, and efficient re-renders
+
+## 🏗️ Project Structure
+
+```
+flow-master/
+├── app/                  # Next.js App Router
+├── components/           # React components
+│   ├── ui/              # Reusable UI components
+│   └── game/            # Game-specific components
+├── stores/               # Zustand state management
+├── lib/                  # Utility functions
+├── hooks/                # Custom React hooks
+├── utils/                # Extracted utility functions
+├── config/               # Configuration files
+├── types/                # TypeScript definitions
+└── constants/            # Constants and themes
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+See [TECH.md](./TECH.md) for detailed technical documentation.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Next.js 16, React 19, TypeScript, Tailwind CSS, Zustand, Framer Motion
 
-## Learn More
+## 📦 Installation
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm install
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📝 License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This project is open source and available for personal and commercial use.
 
-## Deploy on Vercel
+## 🙏 Acknowledgments
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Built with modern web technologies and best practices for maintainability, performance, and user experience.
