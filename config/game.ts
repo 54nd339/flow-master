@@ -28,11 +28,18 @@ export const LEVELS_FOR_HINT = 1;
 
 /**
  * Background level generation configuration
+ * 
+ * Strategy: Generate small batches continuously in round-robin fashion
+ * - Each round generates LEVELS_PER_STAGE (5) levels per grid size
+ * - Target pool size: 2 rounds × 5 levels = 10 levels per grid size (reasonable cache)
+ * - Continuous replenishment as levels are consumed
  */
 export const BACKGROUND_GENERATION = {
-  ROUNDS: 20, // Number of rounds to generate (ROUNDS * LEVELS_PER_STAGE = total levels per grid size)
-  LEVELS_PER_ROUND: LEVELS_PER_STAGE,
+  TARGET_POOL_SIZE: LEVELS_PER_STAGE * 2, // Target: 10 levels per grid size (2 rounds worth)
+  LEVELS_PER_BATCH: LEVELS_PER_STAGE, // Generate 5 levels at a time
   MAX_ATTEMPTS_PER_LEVEL: 2000, // Max attempts when generating a level
+  BATCH_DELAY_MS: 100, // Delay between batches to avoid blocking
+  CYCLE_DELAY_MS: 5000, // Delay between full cycles (all grid sizes processed once)
 } as const;
 
 /**

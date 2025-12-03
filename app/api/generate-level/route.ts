@@ -4,7 +4,7 @@ import { generateUniqueLevelSync } from '@/utils/level-generation-utils';
 import { calculateColorCounts } from '@/utils';
 import { STAGES, BACKGROUND_GENERATION } from '@/config';
 import { GameProgress, LevelData } from '@/types';
-import { getRandomLevelFromPool, getAllPoolHashes, getPoolCount } from '@/lib/server/level-pool';
+import { getRandomLevelFromPool, getAllPoolHashes, getPoolCount, addLevelToPool, isHashInPool } from '@/lib/server/level-pool';
 import { getServerPalette } from '@/lib/server-palettes';
 import { startBackgroundGenerationAsync } from '@/lib/server/background-generator';
 
@@ -37,6 +37,34 @@ export async function POST(request: NextRequest) {
     let colorPalette = palette;
     let minC = minColors;
     let maxC = maxColors;
+
+    // If client already generated a level (because pool was empty), persist it to pool
+    // Expected shape: { clientGeneratedLevel?: LevelData, clientGeneratedHash?: string }
+    if (body && (body.clientGeneratedLevel || body.clientGeneratedHash)) {
+      try {
+        const submittedLevel: LevelData | undefined = body.clientGeneratedLevel;
+        const submittedHash: string | undefined = body.clientGeneratedHash;
+
+        // Use provided hash if present, otherwise compute from submitted level
+        let hashToCheck: string | undefined = submittedHash;
+        if (!hashToCheck && submittedLevel) {
+          try {
+            hashToCheck = generateLevelHash(submittedLevel);
+          } catch (e) {
+            console.warn('Failed to compute hash for submitted level:', e);
+          }
+        }
+
+        if (hashToCheck && !(await isHashInPool(hashToCheck)) && submittedLevel) {
+          // Persist asynchronously (don't block the main generation flow)
+          addLevelToPool(gridWidth, gridHeight, submittedLevel).catch((err) => {
+            console.warn('Failed to persist client-generated level to pool:', err);
+          });
+        }
+      } catch (err) {
+        console.warn('Error handling client-submitted level:', err);
+      }
+    }
 
     if (stageId !== undefined && stageId !== null) {
       // Campaign mode - use stage config

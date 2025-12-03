@@ -33,7 +33,7 @@ const validateAnchors = (
   });
   
   // Check each color's anchors
-  for (const [colorId, anchorIndices] of Object.entries(colorAnchors)) {
+  for (const [, anchorIndices] of Object.entries(colorAnchors)) {
     if (anchorIndices.length !== 2) return false;
     
     const [anchor1, anchor2] = anchorIndices;

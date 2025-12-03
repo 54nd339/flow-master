@@ -31,18 +31,3 @@ export const logError = (error: Error | unknown, context?: ErrorContext): void =
   // Example: Sentry.captureException(error, { tags: context });
 };
 
-/**
- * Logs a warning
- * @param message - Warning message
- * @param context - Optional context information
- */
-export const logWarning = (message: string, context?: ErrorContext): void => {
-  if (process.env.NODE_ENV === 'development') {
-    console.warn(
-      `[Warning${context?.component ? ` in ${context.component}` : ''}]`,
-      message,
-      context?.metadata
-    );
-  }
-};
-

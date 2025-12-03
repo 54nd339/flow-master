@@ -11,7 +11,7 @@ if (typeof window !== 'undefined' || typeof process === 'undefined' || !process.
 }
 
 import { LevelData } from '@/types';
-import { STAGES, LEVELS_PER_STAGE, BACKGROUND_GENERATION } from '@/config';
+import { STAGES, BACKGROUND_GENERATION } from '@/config';
 import { generateUniqueLevelSync } from '@/utils/level-generation-utils';
 import {
   addLevelToPool,
@@ -21,6 +21,15 @@ import {
   updatePoolConfig,
 } from './level-pool';
 import { getServerPalette } from '../server-palettes';
+
+/**
+ * Global flag to track background generation status
+ */
+interface GlobalWithBackgroundGenerator {
+  __backgroundGeneratorRunning?: boolean;
+}
+
+const globalWithBG = global as GlobalWithBackgroundGenerator;
 
 /**
  * Gets unique grid sizes from stages
@@ -76,7 +85,10 @@ async function generateUniqueLevel(
 }
 
 /**
- * Generates levels for a specific grid size
+ * Generates a batch of levels for a specific grid size
+ * 
+ * @param targetCount - Number of levels to generate in this batch (typically LEVELS_PER_BATCH)
+ * @returns Number of levels successfully generated
  */
 async function generateLevelsForGridSize(
   width: number,
@@ -88,113 +100,148 @@ async function generateLevelsForGridSize(
 ): Promise<number> {
   const palette = getServerPalette('WATER'); // Use WATER theme for pre-generation
   let generated = 0;
+  let consecutiveFailures = 0;
+  const maxConsecutiveFailures = 3; // Stop after 3 consecutive failures
   
-  console.log(`[Background Generator] Generating ${targetCount} levels for ${width}x${height}...`);
-  
-  while (generated < targetCount) {
-    const level = await generateUniqueLevel(
-      width,
-      height,
-      minC,
-      maxC,
-      palette,
-      existingHashes,
-      BACKGROUND_GENERATION.MAX_ATTEMPTS_PER_LEVEL
-    );
-    
-    if (level) {
-      await addLevelToPool(width, height, level);
-      generated++;
+  while (generated < targetCount && consecutiveFailures < maxConsecutiveFailures) {
+    try {
+      const level = await generateUniqueLevel(
+        width,
+        height,
+        minC,
+        maxC,
+        palette,
+        existingHashes,
+        BACKGROUND_GENERATION.MAX_ATTEMPTS_PER_LEVEL
+      );
       
-      if (generated % 5 === 0) {
-        console.log(`[Background Generator] Generated ${generated}/${targetCount} levels for ${width}x${height}`);
+      if (level) {
+        await addLevelToPool(width, height, level);
+        generated++;
+        consecutiveFailures = 0; // Reset failure counter on success
+      } else {
+        consecutiveFailures++;
+        console.warn(`[Background Generator] Failed to generate level for ${width}x${height} (${consecutiveFailures}/${maxConsecutiveFailures})`);
       }
-    } else {
-      // Failed to generate after maxAttempts, skip this one
-      console.warn(`[Background Generator] Failed to generate level for ${width}x${height} after max attempts`);
-      break;
+      
+      // Small delay to avoid blocking (use setImmediate in Node.js for better async behavior)
+      await new Promise(resolve => setImmediate(resolve));
+      
+    } catch (error) {
+      consecutiveFailures++;
+      console.error(`[Background Generator] Error generating level for ${width}x${height}:`, error);
+      
+      if (consecutiveFailures >= maxConsecutiveFailures) {
+        console.error(`[Background Generator] Too many failures for ${width}x${height}, stopping batch`);
+        break;
+      }
     }
-    
-    // Small delay to avoid blocking
-    await new Promise(resolve => setTimeout(resolve, 10));
   }
   
   return generated;
 }
 
 /**
- * Starts background level generation
+ * Continuous background level generation loop
+ * 
+ * Architecture:
+ * - Generates LEVELS_PER_BATCH levels per grid size in round-robin fashion
+ * - Target: TARGET_POOL_SIZE levels per grid size
+ * - Non-blocking: Uses setImmediate/setTimeout for async breaks
+ * - Continuous: Runs forever, replenishing pool as levels consumed
+ * - Efficient: Only generates when pool is below target
  */
 export async function startBackgroundGeneration(): Promise<void> {
   // Check if already running
-  if ((global as any).__backgroundGeneratorRunning) {
+  if (globalWithBG.__backgroundGeneratorRunning) {
+    console.log('[Background Generator] Already running, skipping duplicate start');
     return;
   }
-  (global as any).__backgroundGeneratorRunning = true;
+  globalWithBG.__backgroundGeneratorRunning = true;
   
-  console.log('[Background Generator] Starting background level generation...');
+  console.log('[Background Generator] Starting continuous background generation...');
+  console.log(`[Background Generator] Target pool size: ${BACKGROUND_GENERATION.TARGET_POOL_SIZE} levels per grid size`);
+  console.log(`[Background Generator] Batch size: ${BACKGROUND_GENERATION.LEVELS_PER_BATCH} levels`);
   
-  try {
-    const config = await getPoolConfig();
-    const generationRounds = config.generationRounds || BACKGROUND_GENERATION.ROUNDS;
-    const levelsPerRound = config.levelsPerRound || BACKGROUND_GENERATION.LEVELS_PER_ROUND;
-    const targetCount = generationRounds * levelsPerRound;
-    
-    const gridSizes = getUniqueGridSizes();
-    const existingHashes = await getAllPoolHashes();
-    
-    console.log(`[Background Generator] Target: ${targetCount} levels per grid size (${generationRounds} rounds × ${levelsPerRound} levels)`);
-    console.log(`[Background Generator] Grid sizes to process: ${gridSizes.length}`);
-    
-    // Process each grid size
-    for (const gridSize of gridSizes) {
-      const currentCount = await getPoolCount(gridSize.width, gridSize.height);
-      const needed = targetCount - currentCount;
+  const gridSizes = getUniqueGridSizes();
+  console.log(`[Background Generator] Monitoring ${gridSizes.length} grid sizes`);
+  
+  // Continuous generation loop
+  while (globalWithBG.__backgroundGeneratorRunning) {
+    try {
+      const existingHashes = await getAllPoolHashes();
+      let anyGenerationDone = false;
       
-      if (needed <= 0) {
-        console.log(`[Background Generator] ${gridSize.width}x${gridSize.height} already has ${currentCount} levels, skipping`);
-        continue;
-      }
-      
-      // Generate in rounds
-      for (let round = 0; round < generationRounds; round++) {
-        const roundTarget = Math.min(levelsPerRound, targetCount - (await getPoolCount(gridSize.width, gridSize.height)));
-        
-        if (roundTarget <= 0) {
-          break; // Already have enough
+      // Process each grid size in round-robin fashion
+      for (const gridSize of gridSizes) {
+        // Check if we should stop
+        if (!globalWithBG.__backgroundGeneratorRunning) {
+          break;
         }
         
-        await generateLevelsForGridSize(
+        const currentCount = await getPoolCount(gridSize.width, gridSize.height);
+        const needed = BACKGROUND_GENERATION.TARGET_POOL_SIZE - currentCount;
+        
+        if (needed <= 0) {
+          // Pool is full for this grid size, skip
+          continue;
+        }
+        
+        // Generate one batch (LEVELS_PER_BATCH levels)
+        const batchSize = Math.min(needed, BACKGROUND_GENERATION.LEVELS_PER_BATCH);
+        
+        console.log(`[Background Generator] ${gridSize.width}x${gridSize.height}: ${currentCount}/${BACKGROUND_GENERATION.TARGET_POOL_SIZE} levels, generating ${batchSize}...`);
+        
+        const generated = await generateLevelsForGridSize(
           gridSize.width,
           gridSize.height,
           gridSize.minC,
           gridSize.maxC,
-          roundTarget,
+          batchSize,
           existingHashes
         );
         
-        // Update last generated timestamp
-        await updatePoolConfig({
-          lastGenerated: {
-            ...config.lastGenerated,
-            [`${gridSize.width}x${gridSize.height}`]: Date.now(),
-          },
-        });
+        if (generated > 0) {
+          anyGenerationDone = true;
+          const newCount = await getPoolCount(gridSize.width, gridSize.height);
+          console.log(`[Background Generator] ${gridSize.width}x${gridSize.height}: Generated ${generated} levels, pool now has ${newCount}`);
+          
+          // Update last generated timestamp
+          try {
+            const config = await getPoolConfig();
+            await updatePoolConfig({
+              lastGenerated: {
+                ...config.lastGenerated,
+                [`${gridSize.width}x${gridSize.height}`]: Date.now(),
+              },
+            });
+          } catch (configError) {
+            console.warn('[Background Generator] Failed to update config:', configError);
+          }
+        }
         
-        // Delay between rounds
-        await new Promise(resolve => setTimeout(resolve, 100));
+        // Small delay between grid sizes to avoid blocking
+        await new Promise(resolve => setTimeout(resolve, BACKGROUND_GENERATION.BATCH_DELAY_MS));
       }
       
-      const finalCount = await getPoolCount(gridSize.width, gridSize.height);
-      console.log(`[Background Generator] Completed ${gridSize.width}x${gridSize.height}: ${finalCount} levels`);
+      // If no generation was needed this cycle, wait longer before next cycle
+      if (!anyGenerationDone) {
+        console.log('[Background Generator] All pools at target size, waiting...');
+        await new Promise(resolve => setTimeout(resolve, BACKGROUND_GENERATION.CYCLE_DELAY_MS));
+      } else {
+        // Short delay between cycles when actively generating
+        await new Promise(resolve => setTimeout(resolve, BACKGROUND_GENERATION.BATCH_DELAY_MS));
+      }
+      
+    } catch (error) {
+      console.error('[Background Generator] Error in generation loop:', error);
+      // Wait before retrying
+      await new Promise(resolve => setTimeout(resolve, BACKGROUND_GENERATION.CYCLE_DELAY_MS));
     }
-    
-    console.log('[Background Generator] Background generation completed!');
-  } catch (error) {
-    console.error('[Background Generator] Error during background generation:', error);
-  } finally {
-    (global as any).__backgroundGeneratorRunning = false;
   }
+  
+  console.log('[Background Generator] Stopped');
+  globalWithBG.__backgroundGeneratorRunning = false;
 }
 
 /**
@@ -204,6 +251,15 @@ export function startBackgroundGenerationAsync(): void {
   // Start in background, don't await
   startBackgroundGeneration().catch(error => {
     console.error('[Background Generator] Fatal error:', error);
+    globalWithBG.__backgroundGeneratorRunning = false;
   });
+}
+
+/**
+ * Stops the background generation loop gracefully
+ */
+export function stopBackgroundGeneration(): void {
+  console.log('[Background Generator] Stopping...');
+  globalWithBG.__backgroundGeneratorRunning = false;
 }
 

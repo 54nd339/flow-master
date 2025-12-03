@@ -2,10 +2,9 @@
 
 import React from 'react';
 import { 
-  Trophy, ArrowRight, Grid, Wand2, CheckCircle2, 
-  Star, Crown, Zap, Waves, Cpu, BrainCircuit, 
-  Sun, Sparkles, Leaf, Eye, Moon, Heart, Diamond, 
-  Circle, Square, Triangle, X, Plus, Minus, Clock
+  ArrowRight, Grid, Wand2, CheckCircle2, 
+  Crown, Zap, Waves, Cpu, BrainCircuit, 
+  Sun, Sparkles, Leaf, Eye
 } from 'lucide-react';
 import { ThemePreset } from '@/types';
 
@@ -150,11 +149,6 @@ export const THEME_PRESETS: Record<string, ThemePreset> = {
   }
 };
 
-
-export const COLOR_ICONS = [
-  Star, Crown, Zap, Trophy, CheckCircle2, Sun, Moon, Heart, Diamond, Circle, Square, Triangle, X, Plus, Minus
-];
-
 /**
  * Color-blind symbols using numbers 1-40 for better clarity and scalability.
  * Numbers are used instead of symbols for easier recognition, especially on mega grids.
@@ -165,6 +159,4 @@ export const COLOR_BLIND_SYMBOLS = [
   '21', '22', '23', '24', '25', '26', '27', '28', '29', '30',
   '31', '32', '33', '34', '35', '36', '37', '38', '39', '40',
 ];
-
-export * from './styles';
 
