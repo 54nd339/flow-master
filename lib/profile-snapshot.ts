@@ -11,7 +11,7 @@ export const generateProfileSnapshot = async (
   const height = 1400;
   canvas.width = width;
   canvas.height = height;
-  
+
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('Could not get canvas context');
 
@@ -27,7 +27,7 @@ export const generateProfileSnapshot = async (
   ctx.font = 'bold 48px Arial';
   ctx.textAlign = 'center';
   ctx.fillText('FLOW MASTER', width / 2, 80);
-  
+
   ctx.fillStyle = '#ffffff80';
   ctx.font = '24px Arial';
   ctx.fillText('Player Stats', width / 2, 120);
@@ -58,18 +58,18 @@ export const generateProfileSnapshot = async (
   stats.forEach((stat, idx) => {
     const x = (idx % 2) * (width / 2) + 60;
     const statY = y + Math.floor(idx / 2) * 100;
-    
+
     ctx.fillStyle = '#ffffff60';
     ctx.font = '16px Arial';
     ctx.fillText(stat.label, x, statY);
-    
+
     ctx.fillStyle = '#ffffff';
     ctx.font = 'bold 32px Arial';
     ctx.fillText(`${stat.icon} ${stat.value}`, x, statY + 40);
   });
 
   y += 360;
-  
+
   // Time Attack Stats section
   const timeAttackEntries = processTimeAttackScores(progress.timeAttackHighScores || {});
   if (timeAttackEntries.length > 0) {
@@ -77,25 +77,25 @@ export const generateProfileSnapshot = async (
     ctx.font = 'bold 24px Arial';
     ctx.textAlign = 'center';
     ctx.fillText('Time Attack Stats', width / 2, y);
-    
+
     y += 40;
     ctx.font = '16px Arial';
     ctx.textAlign = 'left';
-    
+
     timeAttackEntries.slice(0, 3).forEach((entry) => {
       if (y > height - 100) return;
-      
+
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 16px Arial';
       ctx.fillText(`${entry.gridSize}x${entry.gridSize} • ${entry.timeLimit}s`, 60, y);
-      
+
       ctx.fillStyle = '#ffffff80';
       ctx.font = '14px Arial';
       ctx.fillText(`Best: ${entry.score} puzzles`, 60, y + 22);
-      
+
       y += 50;
     });
-    
+
     y += 20;
   }
 
@@ -108,21 +108,21 @@ export const generateProfileSnapshot = async (
   y += 50;
   ctx.font = '18px Arial';
   ctx.textAlign = 'left';
-  
+
   unlockedAchievements.slice(0, 8).forEach((achievement, idx) => {
     if (y > height - 100) return;
-    
+
     ctx.fillStyle = '#ffffff';
     ctx.font = 'bold 18px Arial';
     ctx.fillText(`✓ ${achievement.name}`, 60, y);
-    
+
     ctx.fillStyle = '#ffffff80';
     ctx.font = '14px Arial';
-    const desc = achievement.description.length > 50 
+    const desc = achievement.description.length > 50
       ? achievement.description.substring(0, 47) + '...'
       : achievement.description;
     ctx.fillText(desc, 60, y + 25);
-    
+
     y += 60;
   });
 
@@ -143,4 +143,3 @@ export const generateProfileSnapshot = async (
     }, 'image/png');
   });
 };
-

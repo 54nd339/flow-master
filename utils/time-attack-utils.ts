@@ -1,4 +1,3 @@
-import { TimeAttackConfig } from '@/types';
 import { GameProgress } from '@/types';
 
 /**
@@ -34,4 +33,3 @@ export const isNewHighScore = (
   const highScore = getTimeAttackHighScore(progress, gridSize, timeLimit);
   return currentScore > highScore;
 };
-

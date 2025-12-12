@@ -88,4 +88,3 @@ export const ACHIEVEMENTS: Achievement[] = [
   { id: 'time_24h', name: 'Day of Flow', description: 'Play for 24 hours', icon: Crown, reward: 1500 },
   { id: 'time_100h', name: 'Century Hours', description: 'Play for 100 hours', icon: Infinity, reward: 5000 },
 ];
-

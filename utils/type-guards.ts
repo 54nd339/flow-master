@@ -17,4 +17,3 @@ export const isValidViewMode = (value: string): value is ViewMode => {
     'SETTINGS',
   ].includes(value);
 };
-

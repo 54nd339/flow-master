@@ -26,11 +26,11 @@ const WarningBanner: React.FC<{
   return (
     <div className="absolute top-0 inset-x-0 z-40 bg-amber-500/90 text-black text-xs font-bold py-2 px-4 flex items-center justify-between gap-2">
       <div className="flex-1 text-center">
-        {levelValidationError 
-          ? `Validation Error: ${levelValidationError}` 
-          : levelUsedFallback 
-          ? 'Fallback algorithm used. Level may have issues.'
-          : generationWarning}
+        {levelValidationError
+          ? `Validation Error: ${levelValidationError}`
+          : levelUsedFallback
+            ? 'Fallback algorithm used. Level may have issues.'
+            : generationWarning}
       </div>
       {(levelUsedFallback || levelValidationError) && (
         <Button
@@ -52,7 +52,7 @@ const WarningBanner: React.FC<{
  */
 const LoadingOverlay: React.FC<{ isGenerating: boolean }> = ({ isGenerating }) => {
   if (!isGenerating) return null;
-  
+
   return (
     <div className="absolute inset-0 z-50 bg-black/80 flex flex-col items-center justify-center">
       <div className="w-10 h-10 border-4 border-white/20 border-t-white rounded-full animate-spin" />
@@ -129,7 +129,7 @@ export const GameBoard: React.FC = () => {
     setLevelUsedFallback,
     setLevelValidationError,
   } = useGameStore();
-  
+
   const handleRegenerate = useCallback(() => {
     setLevelData(null);
     setUserPaths({});
@@ -143,14 +143,14 @@ export const GameBoard: React.FC = () => {
     store.setActiveColor(null);
     startLevel(null, null, progress, setLevelData, setIsGenerating, setGenerationWarning, store.setProgress, setLevelUsedFallback, setLevelValidationError);
   }, [progress, setLevelData, setUserPaths, setIsLevelComplete, setGenerationWarning, setLevelUsedFallback, setLevelValidationError, setIsGenerating]);
-  
+
   const levelDataHashRef = useRef<string>('');
-  
+
   const levelHash = useMemo(() => {
     if (!levelData) return '';
     return `${levelData.width}x${levelData.height}-${Object.keys(levelData.anchors).length}`;
   }, [levelData]);
-  
+
   useEffect(() => {
     if (levelData) {
       if (levelDataHashRef.current !== levelHash) {
@@ -180,7 +180,7 @@ export const GameBoard: React.FC = () => {
 
   const handlePlayStart = useCallback((e: React.PointerEvent) => {
     if (isGenerating || isLevelComplete || !levelData || !gridRef.current) return;
-    
+
     const rect = gridRef.current.getBoundingClientRect();
     const idx = getCellIndex(e.clientX, e.clientY, levelData.width, levelData.height, rect);
     if (idx === -1) return;
@@ -208,7 +208,7 @@ export const GameBoard: React.FC = () => {
 
   const handlePlayMove = useCallback((e: React.PointerEvent) => {
     if (activeColor === null || isGenerating || !levelData || !gridRef.current) return;
-    
+
     const rect = gridRef.current.getBoundingClientRect();
     const idx = getCellIndex(e.clientX, e.clientY, levelData.width, levelData.height, rect);
     if (idx === -1) return;
@@ -346,7 +346,7 @@ export const GameBoard: React.FC = () => {
           />
         </div>
       </div>
-      
+
       {isLevelComplete && (
         <>
           <LevelCompleteModal />

@@ -137,4 +137,3 @@ export const Profile: React.FC = React.memo(() => {
 });
 
 Profile.displayName = 'Profile';
-

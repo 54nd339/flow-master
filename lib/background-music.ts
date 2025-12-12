@@ -47,16 +47,16 @@ class BackgroundMusic {
     }
 
     this.isStarting = true;
-    
+
     // Force stop any existing playback completely
     this.stop();
     await new Promise(resolve => setTimeout(resolve, 150));
-    
+
     if (!this.isEnabled) {
       this.isStarting = false;
       return;
     }
-    
+
     await this.ensureAudioContext();
     if (!this.audioContext) {
       this.isStarting = false;
@@ -87,35 +87,35 @@ class BackgroundMusic {
 
     const now = this.audioContext.currentTime;
     const noteDuration = 4.0; // Slow, meditative notes
-    
+
     // Select note from pentatonic scale with gentle progression
     const noteFreq = this.scale[this.currentNoteIndex];
-    
+
     // Create soft sine wave tone
     const osc = this.audioContext.createOscillator();
     const gain = this.audioContext.createGain();
-    
+
     osc.type = 'sine';
     osc.frequency.value = noteFreq;
-    
+
     // Very gentle attack and release for zen feel
     gain.gain.setValueAtTime(0, now);
     gain.gain.linearRampToValueAtTime(0.15, now + 1.5);
     gain.gain.linearRampToValueAtTime(0.15, now + noteDuration - 1.5);
     gain.gain.linearRampToValueAtTime(0, now + noteDuration);
-    
+
     osc.connect(gain);
     gain.connect(this.masterGain);
-    
+
     osc.start(now);
     osc.stop(now + noteDuration);
-    
+
     this.activeOscillators.push(osc);
     this.activeGains.push(gain);
 
     // Move to next note in scale (with some randomness for variation)
     this.currentNoteIndex = (this.currentNoteIndex + 1) % this.scale.length;
-    
+
     // Occasionally skip a note for more variation
     if (Math.random() < 0.2) {
       this.currentNoteIndex = (this.currentNoteIndex + 1) % this.scale.length;
@@ -135,44 +135,44 @@ class BackgroundMusic {
     const wasPlaying = this.isPlaying;
     this.isPlaying = false;
     this.isStarting = false;
-    
+
     // Cancel scheduled operations
     if (this.loopTimeoutId) {
       clearTimeout(this.loopTimeoutId);
       this.loopTimeoutId = null;
     }
-    
+
     // Mute master gain immediately
     if (this.masterGain && this.audioContext) {
       try {
         const now = this.audioContext.currentTime;
         this.masterGain.gain.cancelScheduledValues(now);
         this.masterGain.gain.setValueAtTime(0, now);
-      } catch (e) {}
+      } catch (e) { }
     }
-    
+
     // Stop all oscillators
     this.activeOscillators.forEach(osc => {
       try {
         osc.stop();
         osc.disconnect();
-      } catch (e) {}
+      } catch (e) { }
     });
     this.activeOscillators = [];
-    
+
     // Disconnect all gain nodes
     this.activeGains.forEach(gain => {
       try {
         gain.disconnect();
-      } catch (e) {}
+      } catch (e) { }
     });
     this.activeGains = [];
-    
+
     // Disconnect master gain
     if (this.masterGain) {
       try {
         this.masterGain.disconnect();
-      } catch (e) {}
+      } catch (e) { }
       this.masterGain = null;
     }
   }

@@ -22,4 +22,3 @@ export const formatTimeMMSS = (seconds: number): string => {
   const secs = seconds % 60;
   return `${mins}:${String(secs).padStart(2, '0')}`;
 };
-

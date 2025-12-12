@@ -24,7 +24,7 @@ export const Celebration: React.FC<CelebrationProps> = ({ colors, onComplete }) 
   useEffect(() => {
     const newParticles: Particle[] = [];
     const particleCount = 50;
-    
+
     for (let i = 0; i < particleCount; i++) {
       const color = colors[i % colors.length] || '#ffffff';
       newParticles.push({
@@ -37,7 +37,7 @@ export const Celebration: React.FC<CelebrationProps> = ({ colors, onComplete }) 
         size: 4 + Math.random() * 6,
       });
     }
-    
+
     setParticles(newParticles);
 
     const timer = setTimeout(() => {
@@ -82,4 +82,3 @@ export const Celebration: React.FC<CelebrationProps> = ({ colors, onComplete }) 
     </AnimatePresence>
   );
 };
-

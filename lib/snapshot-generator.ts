@@ -12,7 +12,7 @@ export const generateBoardSnapshot = async (
   const gridSize = size - padding * 2;
   canvas.width = size;
   canvas.height = size + 120;
-  
+
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('Could not get canvas context');
 
@@ -29,18 +29,18 @@ export const generateBoardSnapshot = async (
   Object.entries(userPaths).forEach(([colorId, path]) => {
     if (path.length < 2) return;
     const color = palette[parseInt(colorId) % palette.length]?.hex || '#ffffff';
-    
+
     ctx.strokeStyle = color;
     ctx.lineWidth = cellSize * 0.15;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    
+
     ctx.beginPath();
     path.forEach((idx, i) => {
       const { row, col } = getCellPosition(idx, levelData.width);
       const x = offsetX + col * cellSize + cellSize / 2;
       const y = offsetY + row * cellSize + cellSize / 2;
-      
+
       if (i === 0) {
         ctx.moveTo(x, y);
       } else {
@@ -85,7 +85,7 @@ export const generateBoardSnapshot = async (
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
       ctx.fill();
-      
+
       ctx.strokeStyle = '#ffffff';
       ctx.lineWidth = 2;
       ctx.stroke();
@@ -100,7 +100,7 @@ export const generateBoardSnapshot = async (
   ctx.font = 'bold 32px Arial';
   ctx.textAlign = 'center';
   ctx.fillText('FLOW MASTER', size / 2, size + 50);
-  
+
   ctx.fillStyle = '#ffffff80';
   ctx.font = '20px Arial';
   ctx.fillText(`${themeLabel} • ${levelData.width}x${levelData.height} Grid`, size / 2, size + 85);
@@ -167,4 +167,3 @@ export const shareSnapshot = async (blobUrl: string): Promise<'shared' | 'copied
     return 'downloaded';
   }
 };
-

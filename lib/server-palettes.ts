@@ -39,4 +39,3 @@ export const SERVER_PALETTES: Record<string, Array<{ id: number; hex: string }>>
 export function getServerPalette(themeId: string = 'WATER'): Array<{ id: number; hex: string }> {
   return SERVER_PALETTES[themeId] || SERVER_PALETTES.WATER;
 }
-

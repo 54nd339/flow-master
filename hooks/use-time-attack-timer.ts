@@ -75,4 +75,3 @@ export const useTimeAttackTimer = (
     return () => clearInterval(interval);
   }, [timeAttack?.isActive, isPaused, setTimeAttack, progress.timeAttackHighScores, updateProgress, setLevelData, setUserPaths, setIsLevelComplete, resetMoveCount, clearMoveHistory]);
 };
-

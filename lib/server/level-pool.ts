@@ -106,18 +106,18 @@ export async function addLevelToPool(
   await ensureLevelsDir();
   const levels = await getLevelsFromPool(width, height);
   const hash = generateLevelHash(level);
-  
+
   // Check for duplicates
   if (levels.some(entry => entry.hash === hash)) {
     return; // Level already exists
   }
-  
+
   const entry: LevelPoolEntry = {
     level,
     hash,
     generatedAt: Date.now(),
   };
-  
+
   levels.push(entry);
   const filePath = getGridSizeFilePath(width, height);
   await fs.writeFile(filePath, JSON.stringify(levels, null, 2), 'utf-8');
@@ -140,7 +140,7 @@ export async function getPoolCount(
 export async function getAllPoolHashes(): Promise<Set<string>> {
   await ensureLevelsDir();
   const hashes = new Set<string>();
-  
+
   try {
     const files = await fs.readdir(LEVELS_DIR);
     for (const file of files) {
@@ -154,7 +154,7 @@ export async function getAllPoolHashes(): Promise<Set<string>> {
   } catch (error) {
     // Directory might be empty, return empty set
   }
-  
+
   return hashes;
 }
 
@@ -200,7 +200,7 @@ export async function updatePoolConfig(config: Partial<PoolConfig>): Promise<voi
 export async function getPoolGridSizes(): Promise<Array<{ width: number; height: number }>> {
   await ensureLevelsDir();
   const gridSizes: Array<{ width: number; height: number }> = [];
-  
+
   try {
     const files = await fs.readdir(LEVELS_DIR);
     for (const file of files) {
@@ -217,7 +217,6 @@ export async function getPoolGridSizes(): Promise<Array<{ width: number; height:
   } catch (error) {
     // Directory might be empty
   }
-  
+
   return gridSizes;
 }
-

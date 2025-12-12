@@ -35,17 +35,15 @@ export const Achievements: React.FC = React.memo(() => {
             return (
               <div
                 key={achievement.id}
-                className={`p-3 rounded-xl border ${
-                  unlocked
+                className={`p-3 rounded-xl border ${unlocked
                     ? 'bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border-yellow-500/30'
                     : 'bg-black/40 border-white/10 opacity-50'
-                }`}
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className={`p-2 rounded-lg ${
-                      unlocked ? 'bg-yellow-500/20 text-yellow-400' : 'bg-white/10 text-white/30'
-                    }`}
+                    className={`p-2 rounded-lg ${unlocked ? 'bg-yellow-500/20 text-yellow-400' : 'bg-white/10 text-white/30'
+                      }`}
                   >
                     <Icon size={20} />
                   </div>
@@ -69,4 +67,3 @@ export const Achievements: React.FC = React.memo(() => {
 });
 
 Achievements.displayName = 'Achievements';
-

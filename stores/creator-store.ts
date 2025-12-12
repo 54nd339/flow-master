@@ -12,7 +12,7 @@ export interface CreatorStateSlice {
   creatorError: string | null;
   creatorSuccess: string | null;
   importCode: string;
-  
+
   setCreatorW: (w: number) => void;
   setCreatorH: (h: number) => void;
   setCreatorLocked: (locked: boolean) => void;
@@ -53,4 +53,3 @@ export const createCreatorStateSlice = (set: SetState): CreatorStateSlice => ({
   setCreatorSuccess: (success) => set({ creatorSuccess: success }),
   setImportCode: (code) => set({ importCode: code }),
 });
-

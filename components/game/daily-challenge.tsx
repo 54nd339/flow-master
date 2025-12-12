@@ -84,7 +84,7 @@ export const DailyChallenge: React.FC = () => {
           )}
         </div>
       </div>
-      
+
       <div className="mb-4 p-3 bg-black/40 rounded-xl border border-white/10">
         <div className="text-xs text-white/60 mb-1">Today's Puzzle</div>
         <div className="text-sm font-bold text-white">8x8 Grid • Medium Difficulty</div>
@@ -105,4 +105,3 @@ export const DailyChallenge: React.FC = () => {
     </Card>
   );
 };
-

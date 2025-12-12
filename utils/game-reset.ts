@@ -27,4 +27,3 @@ export const resetGameState = (params: ResetGameStateParams) => {
   resetMoveCount();
   clearMoveHistory();
 };
-

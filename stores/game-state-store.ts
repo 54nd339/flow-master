@@ -21,7 +21,7 @@ export interface GameStateSlice {
   levelStartTime: number | null;
   levelCompletionTime: number | null;
   preGeneratedLevels: LevelData[];
-  
+
   setLevelData: (data: LevelData | null) => void;
   setUserPaths: (paths: Record<number, number[]>) => void;
   updateUserPath: (colorId: number, path: number[]) => void;
@@ -64,7 +64,7 @@ export const createGameStateSlice = (set: SetState, get: GetState): GameStateSli
   preGeneratedLevels: [],
 
   setLevelData: (data) => {
-    set({ 
+    set({
       levelData: data,
       levelStartTime: data ? Date.now() : null,
       levelCompletionTime: null,
@@ -82,7 +82,7 @@ export const createGameStateSlice = (set: SetState, get: GetState): GameStateSli
   setGenerationWarning: (warning) => set({ generationWarning: warning }),
   setLevelUsedFallback: (used) => set({ levelUsedFallback: used }),
   setLevelValidationError: (error) => set({ levelValidationError: error }),
-  
+
   addMoveToHistory: () =>
     set((state) => {
       const newHistory = [
@@ -145,4 +145,3 @@ export const createGameStateSlice = (set: SetState, get: GetState): GameStateSli
       levelCompletionTime: null,
     }),
 });
-

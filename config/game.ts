@@ -22,9 +22,9 @@ export const STAGES: Stage[] = [
 /**
  * Game progression rules
  */
-export const LEVELS_PER_STAGE = 5;
+export const LEVELS_PER_STAGE = 50;
 export const HINTS_START = 3;
-export const LEVELS_FOR_HINT = 1;
+export const LEVELS_FOR_HINT = 10;
 
 /**
  * Background level generation configuration
@@ -84,4 +84,3 @@ export const TIME_ATTACK = {
  * Application-level configuration constants
  */
 export const STORAGE_KEY = 'flowMaster_v1';
-

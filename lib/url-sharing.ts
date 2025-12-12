@@ -18,12 +18,12 @@ export const generateLevelUrl = (levelData: LevelData): string => {
  */
 export const extractLevelFromUrl = (): LevelData | null => {
   if (typeof window === 'undefined') return null;
-  
+
   const params = new URLSearchParams(window.location.search);
   const levelParam = params.get('level');
-  
+
   if (!levelParam) return null;
-  
+
   try {
     return decompressLevel(decodeURIComponent(levelParam));
   } catch (error) {
@@ -40,7 +40,7 @@ export const extractLevelFromUrl = (): LevelData | null => {
  */
 export const shareLevelUrl = async (levelData: LevelData): Promise<void> => {
   const url = generateLevelUrl(levelData);
-  
+
   if (navigator.share) {
     try {
       await navigator.share({
@@ -52,7 +52,7 @@ export const shareLevelUrl = async (levelData: LevelData): Promise<void> => {
     } catch (error) {
     }
   }
-  
+
   try {
     await navigator.clipboard.writeText(url);
   } catch (error) {
@@ -60,4 +60,3 @@ export const shareLevelUrl = async (levelData: LevelData): Promise<void> => {
     throw new Error('Failed to copy URL to clipboard');
   }
 };
-

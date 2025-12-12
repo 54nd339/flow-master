@@ -18,7 +18,7 @@ interface ShareImageParams {
  */
 export const handleShareImage = async (params: ShareImageParams) => {
   const { levelData, userPaths, palette, themeLabel, onSuccess, onError, setIsGenerating } = params;
-  
+
   setIsGenerating(true);
   try {
     const snapshotUrl = await generateBoardSnapshot(levelData, userPaths, palette, themeLabel);
@@ -43,7 +43,7 @@ export const handleShareImage = async (params: ShareImageParams) => {
  */
 export const handleDownloadImage = async (params: ShareImageParams) => {
   const { levelData, userPaths, palette, themeLabel, onSuccess, onError, setIsGenerating } = params;
-  
+
   setIsGenerating(true);
   try {
     const snapshotUrl = await generateBoardSnapshot(levelData, userPaths, palette, themeLabel);
@@ -102,4 +102,3 @@ export const handleShareStats = async (
     setIsGenerating(false);
   }
 };
-

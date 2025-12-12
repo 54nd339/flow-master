@@ -41,7 +41,7 @@ export default function FlowGame() {
     if (prevViewModeRef.current !== viewMode) {
       const prevWasGameMode = GAME_MODES.includes(prevViewModeRef.current as any);
       const currIsGameMode = GAME_MODES.includes(viewMode as any);
-      
+
       if (prevWasGameMode || currIsGameMode) {
         setLevelData(null);
         setUserPaths({});
@@ -57,12 +57,12 @@ export default function FlowGame() {
   }, [viewMode, setLevelData, setUserPaths, setIsLevelComplete, setGenerationWarning]);
 
   const { setProgress } = useGameStore();
-  
+
   const {
     shiftPreGeneratedLevel,
     addPreGeneratedLevel,
   } = useGameStore();
-  
+
   // Auto-load level for campaign mode
   useEffect(() => {
     if (mounted && !levelData && !isGenerating && viewMode === 'PLAY') {
@@ -93,7 +93,7 @@ export default function FlowGame() {
       return;
     }
     if (progress.music && !backgroundMusic.isCurrentlyPlaying()) {
-      backgroundMusic.start().catch(() => {});
+      backgroundMusic.start().catch(() => { });
     }
   }, [progress.music]);
 

@@ -100,4 +100,3 @@ export interface PerfectScore {
   stars: number; // 0-3 stars
   perfect: boolean; // no backtracking, no line breaks
 }
-

@@ -30,4 +30,3 @@ export const logError = (error: Error | unknown, context?: ErrorContext): void =
   // In production, send to error tracking service
   // Example: Sentry.captureException(error, { tags: context });
 };
-

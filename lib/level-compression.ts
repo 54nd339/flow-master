@@ -9,8 +9,8 @@ export const compressLevel = (data: LevelData | null): string => {
   const aStr = Object.entries(data.anchors)
     .map(([k, v]) => `${k}:${v.colorId}`)
     .join(',');
-  const pStr = data.solvedPaths 
-    ? data.solvedPaths.map(p => `${p.colorId}:${p.path.join('.')}`).join(';') 
+  const pStr = data.solvedPaths
+    ? data.solvedPaths.map(p => `${p.colorId}:${p.path.join('.')}`).join(';')
     : '';
   return `${data.width}:${data.height}|${aStr}|${pStr}`;
 };
@@ -24,7 +24,7 @@ export const decompressLevel = (str: string | null): LevelData | null => {
     if (!str || typeof str !== 'string') return null;
     const parts = str.split('|');
     if (parts.length < 2) return null;
-    
+
     let w: number, h: number;
     // Support legacy format (single number) and new format (width:height)
     if (parts[0].includes(':')) {
@@ -35,13 +35,13 @@ export const decompressLevel = (str: string | null): LevelData | null => {
       w = parseInt(parts[0]);
       h = w;
     }
-    
+
     if (isNaN(w) || isNaN(h)) return null;
-    
+
     const aStr = parts[1];
     const pStr = parts[2];
     const anchors: Record<number, { colorId: number; type: 'endpoint' }> = {};
-    
+
     if (aStr) {
       aStr.split(',').forEach(s => {
         const [idx, col] = s.split(':');
@@ -50,7 +50,7 @@ export const decompressLevel = (str: string | null): LevelData | null => {
         }
       });
     }
-    
+
     const solvedPaths: Array<{ colorId: number; path: number[] }> = [];
     if (pStr) {
       pStr.split(';').forEach(s => {
@@ -63,7 +63,7 @@ export const decompressLevel = (str: string | null): LevelData | null => {
         }
       });
     }
-    
+
     return {
       width: w,
       height: h,
@@ -118,4 +118,3 @@ export const addLevelHash = (hash: string, generatedHashes: string[]): string[] 
   }
   return generatedHashes;
 };
-

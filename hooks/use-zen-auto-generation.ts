@@ -33,4 +33,3 @@ export const useZenAutoGeneration = (
     };
   }, [isLevelComplete, generateRandomPuzzle]);
 };
-

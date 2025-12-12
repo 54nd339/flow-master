@@ -77,4 +77,3 @@ export const GameControls: React.FC = () => {
     </div>
   );
 };
-

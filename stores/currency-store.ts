@@ -24,11 +24,11 @@ export const createCurrencyStateSlice = (set: SetState, get: GetState): Currency
     const state = get();
     const price = THEME_PRICES[themeId] || 0;
     const unlockedThemes = state.progress.unlockedThemes || ['WATER'];
-    
+
     if (unlockedThemes.includes(themeId)) {
       return true;
     }
-    
+
     if (state.progress.flows >= price) {
       set((prevState) => ({
         progress: {
@@ -45,18 +45,18 @@ export const createCurrencyStateSlice = (set: SetState, get: GetState): Currency
     const state = get();
     const today = getTodayDateString();
     const lastDate = state.progress.lastDailyDate;
-    
+
     // Already completed today, don't update
     if (lastDate === today) {
       return;
     }
-    
+
     let newStreak = state.progress.dailyStreak;
     if (lastDate) {
       const lastDateObj = new Date(lastDate);
       const todayObj = new Date(today);
       const daysDiff = Math.floor((todayObj.getTime() - lastDateObj.getTime()) / (1000 * 60 * 60 * 24));
-      
+
       // Streak logic: consecutive days = increment, gap = reset to 1
       if (daysDiff === 1) {
         newStreak += 1;
@@ -67,7 +67,7 @@ export const createCurrencyStateSlice = (set: SetState, get: GetState): Currency
       // First time completing daily challenge
       newStreak = 1;
     }
-    
+
     set((prevState) => ({
       progress: {
         ...prevState.progress,
@@ -77,4 +77,3 @@ export const createCurrencyStateSlice = (set: SetState, get: GetState): Currency
     }));
   },
 });
-

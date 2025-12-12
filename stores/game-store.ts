@@ -15,7 +15,7 @@ export interface GameState extends GameStateSlice, UIStateSlice, CreatorStateSli
   progress: GameProgress;
   timeAttack: TimeAttackConfig | null;
   dailyChallengeDate: string | null;
-  
+
   setProgress: (progress: Partial<GameProgress>) => void;
   setTimeAttack: (config: TimeAttackConfig | null | ((prev: TimeAttackConfig | null) => TimeAttackConfig | null)) => void;
   setDailyChallengeDate: (date: string | null) => void;
@@ -31,22 +31,22 @@ export const useGameStore = create<GameState>()(
       ...createCreatorStateSlice(set),
       ...createCurrencyStateSlice(set, get),
       ...createAchievementStateSlice(set, get),
-      
+
       progress: defaultProgress,
       timeAttack: null,
       dailyChallengeDate: null,
-      
+
       setProgress: (updates) =>
         set((state) => ({
           progress: { ...state.progress, ...updates },
         })),
-      
+
       setTimeAttack: (config) =>
         set((state) => ({
           timeAttack: typeof config === 'function' ? config(state.timeAttack) : config,
         })),
       setDailyChallengeDate: (date) => set({ dailyChallengeDate: date }),
-      
+
       resetProgress: () => {
         set({
           progress: defaultProgress,
@@ -60,7 +60,7 @@ export const useGameStore = create<GameState>()(
           viewMode: 'PLAY',
         });
       },
-      
+
       /**
        * Handles level completion progression logic:
        * - Saves level to history (only if not previously solved)
@@ -71,25 +71,25 @@ export const useGameStore = create<GameState>()(
       handleProgressSave: () => {
         const state = get();
         if (!state.levelData) return;
-        
+
         const levelString = compressLevel(state.levelData);
-        
+
         set((prevState) => {
           const currentStageHist = prevState.progress.history[prevState.progress.stage] || [];
           const currentLevelIdx = prevState.progress.level - 1;
           let newHistory = { ...prevState.progress.history };
           let isNewSolve = false;
-          
+
           // Only save if this level hasn't been solved before (avoid overwriting)
           if (!currentStageHist[currentLevelIdx]) {
             newHistory[prevState.progress.stage] = [...currentStageHist, levelString];
             isNewSolve = true;
           }
-          
+
           // Hint system: award hints every N levels completed
           let nextHints = prevState.progress.hints;
           let nextLevelsSince = prevState.progress.levelsSinceHint;
-          
+
           if (isNewSolve) {
             nextLevelsSince += 1;
             if (nextLevelsSince >= LEVELS_FOR_HINT) {
@@ -97,28 +97,28 @@ export const useGameStore = create<GameState>()(
               nextLevelsSince = 0;
             }
           }
-          
+
           // Progress to next level/stage
           let nextLevel = prevState.progress.level;
           let nextStage = prevState.progress.stage;
           let newMaxStage = prevState.progress.maxStage;
-          
+
           // Advance level if new solve or replaying the last solved level
           if (isNewSolve || currentLevelIdx === currentStageHist.length - 1) {
             nextLevel = prevState.progress.level + 1;
           }
-          
+
           // Stage progression: when completing all levels in a stage
           if (nextLevel > LEVELS_PER_STAGE && prevState.progress.stage < STAGES.length) {
             nextStage = prevState.progress.stage + 1;
             nextLevel = 1;
             newMaxStage = Math.max(newMaxStage, nextStage);
-            
+
             // Rank up system: groups of 5 stages = new rank tier
             // Each rank tier corresponds to a visual theme rank (e.g., Novice -> Apprentice)
             const oldGroup = Math.ceil(prevState.progress.stage / 5);
             const newGroup = Math.ceil(nextStage / 5);
-            
+
             if (newGroup > oldGroup) {
               const theme = THEME_PRESETS[prevState.progress.themeId || 'WATER'];
               if (theme) {
@@ -130,7 +130,7 @@ export const useGameStore = create<GameState>()(
               }
             }
           }
-          
+
           return {
             progress: {
               ...prevState.progress,

@@ -69,4 +69,3 @@ export const RankUpModal: React.FC = () => {
     </motion.div>
   );
 };
-

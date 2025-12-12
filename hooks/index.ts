@@ -4,4 +4,3 @@ export { useTimeAttackTimer } from './use-time-attack-timer';
 export { useZenAutoGeneration } from './use-zen-auto-generation';
 export { useUniqueLevelGenerator } from './use-unique-level-generator';
 export * from './use-game-progress';
-

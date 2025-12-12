@@ -9,4 +9,3 @@ export const processTimeAttackScores = (timeAttackHighScores: Record<string, num
     })
     .sort((a, b) => b.score - a.score);
 };
-

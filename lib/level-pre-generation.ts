@@ -55,80 +55,80 @@ export const preGenerateCampaignLevel = (
   const clientSideGeneration = () => {
     // Run in background (use setTimeout to avoid blocking)
     setTimeout(() => {
-    try {
-      const stageConfig = STAGES.find((s) => s.id === stageId) || STAGES[0];
-      const historyList = progress.history[stageId] || [];
-      
-      // Check if level exists in history
-      if (historyList[levelIndex]) {
-        // Level already exists, skip pre-generation
-        onComplete(null);
-        return;
-      }
+      try {
+        const stageConfig = STAGES.find((s) => s.id === stageId) || STAGES[0];
+        const historyList = progress.history[stageId] || [];
 
-      const stageHashes = new Set(
-        historyList.map((str) => {
-          const lvl = decompressLevel(str);
-          return lvl ? generateLevelHash(lvl) : null;
-        }).filter((h): h is string => h !== null)
-      );
-      const globalHashes = new Set(progress.generatedLevelHashes || []);
-      const allExistingHashes = new Set([...stageHashes, ...globalHashes]);
-      const pal = getCurrentPalette(progress);
-      
-      const { minC, maxC } = calculateColorCounts(stageConfig.w, stageConfig.h, pal.length);
-
-      let newLevel: LevelData | null = null;
-      let isUnique = false;
-      let attempts = 0;
-      const maxAttempts = BACKGROUND_GENERATION.MAX_ATTEMPTS_PER_LEVEL;
-
-      // Use requestIdleCallback with setTimeout fallback to yield control between attempts
-      const scheduleNextAttempt = (callback: () => void) => {
-        if (typeof requestIdleCallback !== 'undefined') {
-          requestIdleCallback(callback, { timeout: 50 });
-        } else {
-          setTimeout(callback, 0);
+        // Check if level exists in history
+        if (historyList[levelIndex]) {
+          // Level already exists, skip pre-generation
+          onComplete(null);
+          return;
         }
-      };
 
-      const tryGenerate = () => {
-        if (isUnique || attempts >= maxAttempts) {
-          if (newLevel && isUnique) {
+        const stageHashes = new Set(
+          historyList.map((str) => {
+            const lvl = decompressLevel(str);
+            return lvl ? generateLevelHash(lvl) : null;
+          }).filter((h): h is string => h !== null)
+        );
+        const globalHashes = new Set(progress.generatedLevelHashes || []);
+        const allExistingHashes = new Set([...stageHashes, ...globalHashes]);
+        const pal = getCurrentPalette(progress);
+
+        const { minC, maxC } = calculateColorCounts(stageConfig.w, stageConfig.h, pal.length);
+
+        let newLevel: LevelData | null = null;
+        let isUnique = false;
+        let attempts = 0;
+        const maxAttempts = BACKGROUND_GENERATION.MAX_ATTEMPTS_PER_LEVEL;
+
+        // Use requestIdleCallback with setTimeout fallback to yield control between attempts
+        const scheduleNextAttempt = (callback: () => void) => {
+          if (typeof requestIdleCallback !== 'undefined') {
+            requestIdleCallback(callback, { timeout: 50 });
+          } else {
+            setTimeout(callback, 0);
+          }
+        };
+
+        const tryGenerate = () => {
+          if (isUnique || attempts >= maxAttempts) {
+            if (newLevel && isUnique) {
+              onComplete(newLevel);
+            } else {
+              onComplete(null);
+            }
+            return;
+          }
+
+          // Generate one attempt
+          const result = generateLevel(stageConfig.w, stageConfig.h, minC, maxC, pal, undefined, maxAttempts);
+          newLevel = result.level;
+
+          const validation = validateNumberlinkRules(newLevel);
+          if (!validation.isValid) {
+            attempts++;
+            scheduleNextAttempt(tryGenerate);
+            return;
+          }
+
+          const hash = generateLevelHash(newLevel);
+          if (!allExistingHashes.has(hash)) {
+            isUnique = true;
             onComplete(newLevel);
           } else {
-            onComplete(null);
+            attempts++;
+            scheduleNextAttempt(tryGenerate);
           }
-          return;
-        }
+        };
 
-        // Generate one attempt
-        const result = generateLevel(stageConfig.w, stageConfig.h, minC, maxC, pal, undefined, maxAttempts);
-        newLevel = result.level;
-        
-        const validation = validateNumberlinkRules(newLevel);
-        if (!validation.isValid) {
-          attempts++;
-          scheduleNextAttempt(tryGenerate);
-          return;
-        }
-        
-        const hash = generateLevelHash(newLevel);
-        if (!allExistingHashes.has(hash)) {
-          isUnique = true;
-          onComplete(newLevel);
-        } else {
-          attempts++;
-          scheduleNextAttempt(tryGenerate);
-        }
-      };
-
-      // Start the async generation loop
-      tryGenerate();
-    } catch (err) {
-      console.error('Pre-generation error:', err);
-      onComplete(null);
-    }
+        // Start the async generation loop
+        tryGenerate();
+      } catch (err) {
+        console.error('Pre-generation error:', err);
+        onComplete(null);
+      }
     }, 0);
   };
 
@@ -206,4 +206,3 @@ export const preGenerateLevel = (
     }
   }, 0);
 };
-

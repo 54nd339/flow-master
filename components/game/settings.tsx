@@ -16,7 +16,7 @@ export const SettingsView: React.FC = React.memo(() => {
   const flows = useGameStore((state) => state.progress.flows);
   const unlockedThemes = useGameStore((state) => state.progress.unlockedThemes);
   const themeId = useGameStore((state) => state.progress.themeId);
-  
+
   const progress = useMemo(
     () => ({ colorblind, sound, music, flows, unlockedThemes, themeId }),
     [colorblind, sound, music, flows, unlockedThemes, themeId]
@@ -32,18 +32,18 @@ export const SettingsView: React.FC = React.memo(() => {
     resetProgress();
     setShowResetConfirm(false);
   }, [resetProgress]);
-  
+
   const handleColorblindToggle = React.useCallback(() => {
     setProgress({ colorblind: !colorblind });
   }, [setProgress, colorblind]);
-  
+
   const handleSoundToggle = React.useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
     const newSound = !sound;
     setProgress({ sound: newSound });
     audioEngine.setEnabled(newSound);
   }, [setProgress, sound]);
-  
+
   const handleMusicToggle = React.useCallback(async (e: React.MouseEvent) => {
     e.stopPropagation();
     const newMusic = !music;
@@ -56,11 +56,11 @@ export const SettingsView: React.FC = React.memo(() => {
       backgroundMusic.stop();
     }
   }, [setProgress, music]);
-  
+
   const handleResetConfirm = React.useCallback(() => {
     setShowResetConfirm(true);
   }, []);
-  
+
   const handleResetCancel = React.useCallback(() => {
     setShowResetConfirm(false);
   }, []);
@@ -87,14 +87,12 @@ export const SettingsView: React.FC = React.memo(() => {
               </div>
               <button
                 onClick={handleColorblindToggle}
-                className={`w-12 h-6 rounded-full transition-colors relative ${
-                  colorblind ? 'bg-green-500' : 'bg-slate-700'
-                }`}
+                className={`w-12 h-6 rounded-full transition-colors relative ${colorblind ? 'bg-green-500' : 'bg-slate-700'
+                  }`}
               >
                 <div
-                  className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                    colorblind ? 'translate-x-6' : ''
-                  }`}
+                  className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${colorblind ? 'translate-x-6' : ''
+                    }`}
                 />
               </button>
             </div>
@@ -107,14 +105,12 @@ export const SettingsView: React.FC = React.memo(() => {
               </div>
               <button
                 onClick={handleSoundToggle}
-                className={`w-12 h-6 rounded-full transition-colors relative ${
-                  sound ? 'bg-green-500' : 'bg-slate-700'
-                }`}
+                className={`w-12 h-6 rounded-full transition-colors relative ${sound ? 'bg-green-500' : 'bg-slate-700'
+                  }`}
               >
                 <div
-                  className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                    sound ? 'translate-x-6' : ''
-                  }`}
+                  className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${sound ? 'translate-x-6' : ''
+                    }`}
                 />
               </button>
             </div>
@@ -127,14 +123,12 @@ export const SettingsView: React.FC = React.memo(() => {
               </div>
               <button
                 onClick={handleMusicToggle}
-                className={`w-12 h-6 rounded-full transition-colors relative ${
-                  music ? 'bg-green-500' : 'bg-slate-700'
-                }`}
+                className={`w-12 h-6 rounded-full transition-colors relative ${music ? 'bg-green-500' : 'bg-slate-700'
+                  }`}
               >
                 <div
-                  className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
-                    music ? 'translate-x-6' : ''
-                  }`}
+                  className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${music ? 'translate-x-6' : ''
+                    }`}
                 />
               </button>
             </div>
@@ -168,7 +162,7 @@ export const SettingsView: React.FC = React.memo(() => {
                   setProgress({ themeId: theme.id });
                 }
               }, [theme.id, unlockTheme, setProgress]);
-              
+
               const handleThemeSelect = React.useCallback(() => {
                 setProgress({ themeId: theme.id });
               }, [theme.id, setProgress]);
@@ -176,21 +170,19 @@ export const SettingsView: React.FC = React.memo(() => {
               return (
                 <div
                   key={theme.id}
-                  className={`p-4 rounded-xl border transition-all ${
-                    isUnlocked
+                  className={`p-4 rounded-xl border transition-all ${isUnlocked
                       ? isCurrent
                         ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 border-blue-500/50'
                         : 'bg-black/40 border-white/20 hover:border-white/40'
                       : 'bg-black/60 border-white/10 opacity-75'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-4">
                     <div
-                      className={`p-3 rounded-xl ${
-                        isUnlocked
+                      className={`p-3 rounded-xl ${isUnlocked
                           ? 'bg-gradient-to-br from-blue-500 to-purple-600'
                           : 'bg-white/10'
-                      }`}
+                        }`}
                     >
                       {isUnlocked ? (
                         <Palette size={24} className="text-white" />
@@ -242,11 +234,10 @@ export const SettingsView: React.FC = React.memo(() => {
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className={`mt-2 p-2 rounded-lg flex items-center gap-2 ${
-                        purchaseFeedback.success
+                      className={`mt-2 p-2 rounded-lg flex items-center gap-2 ${purchaseFeedback.success
                           ? 'bg-green-500/20 text-green-400'
                           : 'bg-red-500/20 text-red-400'
-                      }`}
+                        }`}
                     >
                       {purchaseFeedback.success ? (
                         <>
@@ -320,4 +311,3 @@ export const SettingsView: React.FC = React.memo(() => {
 });
 
 SettingsView.displayName = 'SettingsView';
-

@@ -75,16 +75,16 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         );
       }
-      
+
       gridWidth = stageConfig.w;
       gridHeight = stageConfig.h;
-      
+
       // Safely get palette with fallback
       try {
         const themeId = (progress && typeof progress === 'object' && 'themeId' in progress)
           ? (progress as GameProgress).themeId
           : 'WATER';
-        
+
         const pal = getServerPalette(themeId);
         colorPalette = pal;
         const colorCounts = calculateColorCounts(gridWidth, gridHeight, pal.length);
@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
       try {
         // Check if pool has levels for this grid size
         const poolCount = await getPoolCount(gridWidth, gridHeight);
-        
+
         // If pool is empty, tell client to generate
         if (poolCount === 0) {
           return NextResponse.json({
@@ -139,17 +139,17 @@ export async function POST(request: NextRequest) {
             clientShouldGenerate: true,
           });
         }
-        
+
         const poolLevel = await getRandomLevelFromPool(gridWidth, gridHeight);
         if (poolLevel) {
           // Check if level is unique for this client
           const poolHash = generateLevelHash(poolLevel);
-          
+
           // Check stage history for duplicates
           const historyList = (history && typeof history === 'object')
             ? (history[stageId] || [])
             : [];
-          
+
           const stageHashes = new Set<string>();
           try {
             for (const str of historyList) {
@@ -164,13 +164,13 @@ export async function POST(request: NextRequest) {
           } catch (hashError) {
             console.warn('Error processing history hashes:', hashError);
           }
-          
+
           const globalHashes = new Set(
-            Array.isArray(generatedLevelHashes) 
+            Array.isArray(generatedLevelHashes)
               ? generatedLevelHashes.filter((h): h is string => typeof h === 'string')
               : []
           );
-          
+
           // If pool level is unique for this client, return it
           if (!stageHashes.has(poolHash) && !globalHashes.has(poolHash)) {
             return NextResponse.json({
@@ -207,7 +207,7 @@ export async function POST(request: NextRequest) {
     const historyList = (history && typeof history === 'object' && stageId !== undefined && stageId !== null)
       ? (history[stageId] || [])
       : [];
-    
+
     const stageHashes = new Set<string>();
     try {
       for (const str of historyList) {
@@ -222,11 +222,11 @@ export async function POST(request: NextRequest) {
     } catch (hashError) {
       console.warn('Error processing history hashes:', hashError);
     }
-    
+
     // Also check pool hashes for global uniqueness
     const poolHashes = await getAllPoolHashes();
     const globalHashes = new Set(
-      Array.isArray(generatedLevelHashes) 
+      Array.isArray(generatedLevelHashes)
         ? generatedLevelHashes.filter((h): h is string => typeof h === 'string')
         : []
     );
@@ -236,7 +236,7 @@ export async function POST(request: NextRequest) {
     const seedGenerator = (stageId !== undefined && stageId !== null && levelIndex !== undefined && levelIndex !== null)
       ? (attempt: number) => stageId * 1000 + levelIndex + attempt
       : undefined;
-        
+
     const result = generateUniqueLevelSync({
       width: gridWidth,
       height: gridHeight,
@@ -272,8 +272,8 @@ export async function POST(request: NextRequest) {
     const errorStack = error instanceof Error ? error.stack : String(error);
     console.error('Error details:', { errorMessage, errorStack });
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Failed to generate level',
         details: process.env.NODE_ENV === 'development' ? errorMessage : undefined
       },
@@ -281,5 +281,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
-

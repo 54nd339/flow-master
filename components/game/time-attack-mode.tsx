@@ -61,7 +61,7 @@ export const TimeAttackMode: React.FC = () => {
           clearMoveHistory,
         });
         setLevelData(preGenerated);
-        
+
         // Pre-generate next 2 levels in background
         if (addPreGeneratedLevel) {
           const { minC, maxC } = calculateColorCounts(size, size, palette.length);
@@ -75,10 +75,10 @@ export const TimeAttackMode: React.FC = () => {
         return;
       }
     }
-    
+
     const { minC, maxC } = calculateColorCounts(size, size, palette.length);
     generateUniqueLevel(size, size, minC, maxC, palette);
-    
+
     // Pre-generate next 2 levels in background
     if (addPreGeneratedLevel) {
       preGenerateLevel(size, size, minC, maxC, palette, progress, (level) => {
@@ -109,18 +109,18 @@ export const TimeAttackMode: React.FC = () => {
 
   const handlePuzzleComplete = useCallback(() => {
     if (!timeAttack || !timeAttack.isActive || puzzleCompleteRef.current) return;
-    
+
     puzzleCompleteRef.current = true;
-    
+
     // Increment total time attack puzzles completed
     updateProgress({
       timeAttackPuzzlesCompleted: (progress.timeAttackPuzzlesCompleted || 0) + 1,
     });
-    
+
     setTimeAttack((prev) => {
       if (!prev) return null;
       const newCount = prev.puzzlesCompleted + 1;
-      
+
       if (prev.timeRemaining > 0) {
         setTimeout(() => {
           generateNextPuzzle(prev.gridSize);
@@ -129,7 +129,7 @@ export const TimeAttackMode: React.FC = () => {
       } else {
         puzzleCompleteRef.current = false;
       }
-      
+
       return {
         ...prev,
         puzzlesCompleted: newCount,
@@ -149,7 +149,7 @@ export const TimeAttackMode: React.FC = () => {
       const scoreKey = getTimeAttackScoreKey(timeAttack.gridSize, timeAttack.timeLimit);
       const currentHighScores = progress.timeAttackHighScores || {};
       const currentHighScore = getTimeAttackHighScore(progress, timeAttack.gridSize, timeAttack.timeLimit);
-      
+
       if (finalScore > currentHighScore) {
         updateProgress({
           timeAttackHighScores: {
@@ -187,11 +187,10 @@ export const TimeAttackMode: React.FC = () => {
                 <button
                   key={size}
                   onClick={() => setSelectedGridSize(size)}
-                  className={`p-3 rounded-xl font-bold transition-all ${
-                    selectedGridSize === size
+                  className={`p-3 rounded-xl font-bold transition-all ${selectedGridSize === size
                       ? 'bg-white text-black'
                       : 'bg-white/10 text-white hover:bg-white/20'
-                  }`}
+                    }`}
                 >
                   {size}x{size}
                 </button>
@@ -206,11 +205,10 @@ export const TimeAttackMode: React.FC = () => {
                 <button
                   key={time}
                   onClick={() => setSelectedTimeLimit(time)}
-                  className={`p-3 rounded-xl font-bold transition-all ${
-                    selectedTimeLimit === time
+                  className={`p-3 rounded-xl font-bold transition-all ${selectedTimeLimit === time
                       ? 'bg-white text-black'
                       : 'bg-white/10 text-white hover:bg-white/20'
-                  }`}
+                    }`}
                 >
                   {time}s
                 </button>
@@ -320,7 +318,7 @@ export const TimeAttackMode: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       {timeAttack && (() => {
         const highScore = getTimeAttackHighScore(progress, timeAttack.gridSize, timeAttack.timeLimit);
         return (
@@ -337,4 +335,3 @@ export const TimeAttackMode: React.FC = () => {
     </Card>
   );
 };
-

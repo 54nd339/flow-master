@@ -51,9 +51,8 @@ export const StageSelectModal: React.FC = () => {
                         <Unlock size={12} className="text-white/80" />
                       )}
                       <span
-                        className={`font-bold text-xs ${
-                          isLocked ? 'text-white/30' : 'text-white'
-                        }`}
+                        className={`font-bold text-xs ${isLocked ? 'text-white/30' : 'text-white'
+                          }`}
                       >
                         Area {s.id}: {s.w}x{s.h}
                       </span>
@@ -70,13 +69,12 @@ export const StageSelectModal: React.FC = () => {
                             <button
                               key={lvlIdx}
                               onClick={() => handleStageSelect(s.id, lvlIdx)}
-                              className={`aspect-square rounded-md font-bold text-[10px] flex items-center justify-center transition-all ${
-                                isCurrent
+                              className={`aspect-square rounded-md font-bold text-[10px] flex items-center justify-center transition-all ${isCurrent
                                   ? 'bg-white text-black shadow-lg scale-110 ring-2 ring-white'
                                   : isSolved
-                                  ? 'bg-white/20 text-white hover:bg-white/30'
-                                  : 'bg-black/40 text-white/30'
-                              }`}
+                                    ? 'bg-white/20 text-white hover:bg-white/30'
+                                    : 'bg-black/40 text-white/30'
+                                }`}
                             >
                               {lvlIdx + 1}
                             </button>
@@ -94,4 +92,3 @@ export const StageSelectModal: React.FC = () => {
     </Modal>
   );
 };
-

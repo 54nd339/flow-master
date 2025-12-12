@@ -27,29 +27,29 @@ const matchesSize = (width: number, height: number, ...sizes: Array<[number, num
  */
 export const getGridSizeConfig = (width: number, height: number): GridSizeConfig => {
   const maxDim = Math.max(width, height);
-  
+
   if (maxDim <= 9) {
     return { maxCellsPerColor: 10, minCellsPerColor: 6 };
   }
-  
+
   if (
     matchesSize(width, height, [8, 11], [10, 10], [9, 12], [11, 11], [10, 13])
   ) {
     return { maxCellsPerColor: 9, minCellsPerColor: 6 };
   }
-  
+
   if (
     matchesSize(width, height, [12, 12], [11, 14], [13, 13], [12, 15], [14, 14])
   ) {
     return { maxCellsPerColor: 8, minCellsPerColor: 6 };
   }
-  
+
   if (
     matchesSize(width, height, [13, 16], [15, 15], [14, 17], [15, 18], [16, 19])
   ) {
     return { maxCellsPerColor: 7, minCellsPerColor: 6 };
   }
-  
+
   return { maxCellsPerColor: 6, minCellsPerColor: 6 };
 };
 

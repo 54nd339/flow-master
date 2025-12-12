@@ -22,31 +22,31 @@ export const calculateColorCounts = (
 ): { minC: number; maxC: number; shouldShowNumbers?: boolean } => {
   const totalCells = width * height;
   const { maxCellsPerColor, minCellsPerColor } = getGridSizeConfig(width, height);
-  
+
   // Calculate ideal color counts based on cell density
   const idealMinC = Math.ceil(totalCells / maxCellsPerColor);
   const idealMaxC = Math.ceil(totalCells / minCellsPerColor);
-  
+
   // Ensure minimum of 4 colors for very small grids
   const calculatedMinC = Math.max(4, idealMinC);
   const calculatedMaxC = idealMaxC;
-  
+
   // Check if ideal range exceeds palette capacity
   const exceedsPalette = calculatedMaxC > maxPaletteSize;
-  
+
   if (exceedsPalette) {
     // When palette limit is hit, use all available colors
     const minC = Math.max(4, Math.floor(maxPaletteSize * 0.75));
     const maxC = maxPaletteSize;
     return { minC, maxC, shouldShowNumbers: true };
   }
-  
+
   // Normal case: ensure minC <= maxC and cap at palette
   const minC = calculatedMinC;
   const maxC = Math.min(maxPaletteSize, Math.max(minC, calculatedMaxC));
-  
+
   // Show numbers only if we're using the full palette (even if not mega grid)
   const shouldShowNumbers = maxC >= maxPaletteSize;
-  
+
   return { minC, maxC, shouldShowNumbers };
 };

@@ -17,4 +17,3 @@ export { LevelCompleteModal } from './modals/level-complete-modal';
 export { RankUpModal } from './modals/rank-up-modal';
 export { StageSelectModal } from './modals/stage-select-modal';
 export { ThemeSelectModal } from './modals/theme-select-modal';
-

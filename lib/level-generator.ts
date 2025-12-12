@@ -23,7 +23,7 @@ const validateAnchors = (
   width: number
 ): boolean => {
   const colorAnchors: Record<number, number[]> = {};
-  
+
   // Group anchors by color
   Object.entries(anchors).forEach(([idx, anchor]) => {
     if (!colorAnchors[anchor.colorId]) {
@@ -31,19 +31,19 @@ const validateAnchors = (
     }
     colorAnchors[anchor.colorId].push(parseInt(idx));
   });
-  
+
   // Check each color's anchors
   for (const [, anchorIndices] of Object.entries(colorAnchors)) {
     if (anchorIndices.length !== 2) return false;
-    
+
     const [anchor1, anchor2] = anchorIndices;
-    
+
     // Anchors must not be adjacent (minimum 2 cells apart for solvability)
     if (areAdjacent(anchor1, anchor2, width)) {
       return false;
     }
   }
-  
+
   return true;
 };
 
@@ -103,7 +103,7 @@ export const generateLevel = (
       let startIdx = -1;
       let bestScore = 99;
       const emptyIndices = Array.from(emptyCells);
-      
+
       /**
        * Starting point selection: prefer cells with fewer free neighbors.
        * This heuristic helps avoid creating isolated regions that would make
@@ -119,18 +119,18 @@ export const generateLevel = (
           startIdx = idx;
         }
       }
-      
+
       if (startIdx === -1) startIdx = emptyIndices[0];
-      
+
       const currentPath = [startIdx];
       const colorId = paths.length;
       grid[startIdx] = colorId;
       emptyCells.delete(startIdx);
       filledCount++;
-      
+
       let curr = startIdx;
       let pathStuck = false;
-      
+
       /**
        * Path generation loop: extends path until no valid moves remain.
        * Valid moves must:
@@ -144,7 +144,7 @@ export const generateLevel = (
           if (grid[next] !== -1) return false;
           const nextNeighbors = getNeighbors(next, width, height);
           if (nextNeighbors.some(nn => grid[nn] === colorId && nn !== curr)) return false;
-          
+
           if (size < 400) {
             const currNeighbors = getNeighbors(curr, width, height);
             for (const n of currNeighbors) {
@@ -158,7 +158,7 @@ export const generateLevel = (
           }
           return true;
         });
-        
+
         if (validMoves.length > 0) {
           const next = validMoves[Math.floor(random() * validMoves.length)];
           grid[next] = colorId;
@@ -170,13 +170,13 @@ export const generateLevel = (
           pathStuck = true;
         }
       }
-      
+
       // Ensure path is long enough and endpoints are not adjacent
       if (currentPath.length < 3) {
         stuck = true;
         break;
       }
-      
+
       // Check if endpoints are adjacent - if so, try to extend the path
       if (areAdjacent(currentPath[0], currentPath[currentPath.length - 1], width)) {
         // Try to extend the path by finding another valid move
@@ -187,7 +187,7 @@ export const generateLevel = (
           if (currentPath.includes(next)) return false;
           return true;
         });
-        
+
         if (validExtensions.length > 0) {
           const extension = validExtensions[Math.floor(random() * validExtensions.length)];
           grid[extension] = colorId;
@@ -200,14 +200,14 @@ export const generateLevel = (
           break;
         }
       }
-      
+
       paths.push({ colorId, path: currentPath });
     }
-    
+
     // Success: all cells filled and minimum color requirement met
     if (!stuck && filledCount === size && paths.length >= minC) {
       const anchors: Record<number, { colorId: number; type: 'endpoint' }> = {};
-      
+
       // Ensure we use all colors from 0 to targetColors-1
       // Create a shuffled array of all target colors
       const colorAssignments: number[] = [];
@@ -219,20 +219,20 @@ export const generateLevel = (
         const j = Math.floor(random() * (i + 1));
         [colorAssignments[i], colorAssignments[j]] = [colorAssignments[j], colorAssignments[i]];
       }
-      
+
       // Map paths to colors
       // This ensures all target colors are represented
       if (paths.length !== targetColors) {
         continue;
       }
-      
+
       paths.forEach((p, i) => {
         const visibleColorId = colorAssignments[i];
         p.colorId = visibleColorId;
         anchors[p.path[0]] = { colorId: visibleColorId, type: 'endpoint' };
         anchors[p.path[p.path.length - 1]] = { colorId: visibleColorId, type: 'endpoint' };
       });
-      
+
       // Validate anchors: same color anchors must not be adjacent
       if (validateAnchors(anchors, width)) {
         const level: LevelData = { width, height, anchors, difficulty: paths.length, solvedPaths: paths };
@@ -241,7 +241,7 @@ export const generateLevel = (
       // If validation fails, continue to next attempt
     }
   }
-  
+
   /**
    * Fallback algorithm: Uses distributed DFS with snake/cut method
    * Creates more complex and challenging levels even when time limit is reached
@@ -294,7 +294,7 @@ const generateFallbackLevel = (
   const numColors = Math.min(paletteLen, Math.max(minC, Math.floor(random() * (maxC - minC + 1) + minC)));
   const grid = new Int32Array(size).fill(-1);
   const paths: Array<{ colorId: number; path: number[] }> = [];
-  
+
   // Calculate target cells per path to ensure we can fill the grid with exactly numColors paths
   const targetCellsPerPath = Math.floor(size / numColors);
   const remainder = size % numColors;
@@ -305,14 +305,14 @@ const generateFallbackLevel = (
    */
   const regions: number[][] = [];
   const visited = new Set<number>();
-  
+
   // Create regions using BFS-like expansion
   // Each region targets approximately size/numColors cells to ensure we get exactly numColors paths
   for (let colorId = 0; colorId < numColors; colorId++) {
     const region: number[] = [];
     // Distribute cells evenly: first (size % numColors) regions get one extra cell
     const targetSize = targetCellsPerPath + (colorId < remainder ? 1 : 0);
-    
+
     // Find starting point (prefer unvisited cells)
     let startIdx = -1;
     for (let i = 0; i < size; i++) {
@@ -321,25 +321,25 @@ const generateFallbackLevel = (
         break;
       }
     }
-    
+
     if (startIdx === -1) break;
-    
+
     // Snake pattern DFS: prefer moving in one direction to create snake-like paths
     const stack: number[] = [startIdx];
     let snakeDirection = Math.floor(random() * 4); // 0: right, 1: down, 2: left, 3: up
-    
+
     while (stack.length > 0 && region.length < targetSize) {
       const current = stack.pop()!;
       if (visited.has(current) || grid[current] !== -1) continue;
-      
+
       visited.add(current);
       region.push(current);
       grid[current] = colorId;
-      
+
       const neighbors = getNeighbors(current, width, height);
       const preferredNeighbors: number[] = [];
       const otherNeighbors: number[] = [];
-      
+
       // Prioritize neighbors in snake direction
       neighbors.forEach(n => {
         if (!visited.has(n) && grid[n] === -1) {
@@ -347,13 +347,13 @@ const generateFallbackLevel = (
           const c = n % width;
           const currR = Math.floor(current / width);
           const currC = current % width;
-          
-          const isPreferred = 
+
+          const isPreferred =
             (snakeDirection === 0 && c > currC) || // right
             (snakeDirection === 1 && r > currR) || // down
             (snakeDirection === 2 && c < currC) || // left
             (snakeDirection === 3 && r < currR);   // up
-          
+
           if (isPreferred) {
             preferredNeighbors.push(n);
           } else {
@@ -361,7 +361,7 @@ const generateFallbackLevel = (
           }
         }
       });
-      
+
       // Add preferred neighbors first, then others
       const allNeighbors = [...preferredNeighbors, ...otherNeighbors];
       // Shuffle to add some randomness
@@ -369,18 +369,18 @@ const generateFallbackLevel = (
         const j = Math.floor(random() * (i + 1));
         [allNeighbors[i], allNeighbors[j]] = [allNeighbors[j], allNeighbors[i]];
       }
-      
+
       stack.push(...allNeighbors);
-      
+
       // Occasionally change snake direction for more variety
       if (random() < 0.3) {
         snakeDirection = Math.floor(random() * 4);
       }
     }
-    
+
     regions.push(region);
   }
-  
+
   // Fill remaining cells with nearest region
   for (let i = 0; i < size; i++) {
     if (grid[i] === -1) {
@@ -388,25 +388,25 @@ const generateFallbackLevel = (
       let minDist = Infinity;
       const r = Math.floor(i / width);
       const c = i % width;
-      
+
       for (let j = 0; j < regions.length; j++) {
         if (regions[j].length === 0) continue;
         const regionCenter = regions[j][Math.floor(regions[j].length / 2)];
         const centerR = Math.floor(regionCenter / width);
         const centerC = regionCenter % width;
         const dist = Math.abs(r - centerR) + Math.abs(c - centerC);
-        
+
         if (dist < minDist) {
           minDist = dist;
           nearestRegion = j;
         }
       }
-      
+
       grid[i] = nearestRegion;
       regions[nearestRegion].push(i);
     }
   }
-  
+
   /**
    * Convert regions to paths using Hamiltonian-like traversal
    * Creates paths that visit all cells in a region efficiently
@@ -414,35 +414,35 @@ const generateFallbackLevel = (
   for (let colorId = 0; colorId < regions.length; colorId++) {
     const region = regions[colorId];
     if (region.length === 0) continue;
-    
+
     // Use DFS to create a path through the region
     const path: number[] = [];
     const regionSet = new Set(region);
     const visitedInRegion = new Set<number>();
-    
+
     const dfs = (idx: number) => {
       if (visitedInRegion.has(idx) || !regionSet.has(idx)) return;
       visitedInRegion.add(idx);
       path.push(idx);
-      
+
       const neighbors = getNeighbors(idx, width, height);
       // Prefer neighbors that are in the region and unvisited
-      const validNeighbors = neighbors.filter(n => 
+      const validNeighbors = neighbors.filter(n =>
         regionSet.has(n) && !visitedInRegion.has(n)
       );
-      
+
       // Sort by distance to create more linear paths
       validNeighbors.sort((a, b) => {
         const aNeighbors = getNeighbors(a, width, height).filter(n => regionSet.has(n) && !visitedInRegion.has(n)).length;
         const bNeighbors = getNeighbors(b, width, height).filter(n => regionSet.has(n) && !visitedInRegion.has(n)).length;
         return aNeighbors - bNeighbors;
       });
-      
+
       for (const neighbor of validNeighbors) {
         dfs(neighbor);
       }
     };
-    
+
     // Start from a corner or edge cell for better path structure
     let startCell = region[0];
     for (const cell of region) {
@@ -453,9 +453,9 @@ const generateFallbackLevel = (
         break;
       }
     }
-    
+
     dfs(startCell);
-    
+
     // If path doesn't cover all cells, add remaining cells
     if (path.length < region.length) {
       const remaining = region.filter(cell => !visitedInRegion.has(cell));
@@ -470,7 +470,7 @@ const generateFallbackLevel = (
         }
       }
     }
-    
+
     if (path.length >= 3 && !areAdjacent(path[0], path[path.length - 1], width)) {
       paths.push({ colorId, path });
     } else if (path.length >= 3) {
@@ -496,10 +496,10 @@ const generateFallbackLevel = (
       }
     }
   }
-  
+
   // Create anchors from path endpoints
   const anchors: Record<number, { colorId: number; type: 'endpoint' }> = {};
-  
+
   // Ensure we use all colors from 0 to numColors-1
   // Shuffle color assignments to distribute colors evenly
   const colorAssignments: number[] = [];
@@ -511,7 +511,7 @@ const generateFallbackLevel = (
     const j = Math.floor(random() * (i + 1));
     [colorAssignments[i], colorAssignments[j]] = [colorAssignments[j], colorAssignments[i]];
   }
-  
+
   // Map paths to colors - ensure we have exactly numColors paths
   // If we have fewer paths than numColors, some colors won't be used
   // This can happen if path generation fails for some colors
@@ -523,33 +523,33 @@ const generateFallbackLevel = (
     anchors[p.path[0]] = { colorId: visibleColorId, type: 'endpoint' };
     anchors[p.path[p.path.length - 1]] = { colorId: visibleColorId, type: 'endpoint' };
   });
-  
+
   // Ensure we have exactly numColors paths - if not, we're missing some colors
   // This is a known limitation when the fallback algorithm can't create enough paths
   if (paths.length < numColors) {
     // Log warning but continue - the level is still playable
     console.warn(`Fallback algorithm generated ${paths.length} paths but ${numColors} colors were requested. Some colors will be missing.`);
   }
-  
+
   // Validate anchors: same color anchors must not be adjacent
   // If validation fails, try to fix by adjusting anchor positions
   if (!validateAnchors(anchors, width)) {
     // Try to fix by moving anchors to non-adjacent positions
     const fixedAnchors: Record<number, { colorId: number; type: 'endpoint' }> = {};
     const colorAnchors: Record<number, number[]> = {};
-    
+
     Object.entries(anchors).forEach(([idx, anchor]) => {
       if (!colorAnchors[anchor.colorId]) {
         colorAnchors[anchor.colorId] = [];
       }
       colorAnchors[anchor.colorId].push(parseInt(idx));
     });
-    
+
     for (const [colorId, anchorIndices] of Object.entries(colorAnchors)) {
       if (anchorIndices.length === 2) {
         const [anchor1, anchor2] = anchorIndices;
         const path = paths.find(p => (p.colorId % paletteLen) === parseInt(colorId));
-        
+
         if (path && areAdjacent(anchor1, anchor2, width)) {
           // Move one anchor to a non-adjacent position in the path
           // Prefer positions that are at least 2 cells away
@@ -569,26 +569,25 @@ const generateFallbackLevel = (
         }
       }
     }
-    
+
     // If fix was successful, use fixed anchors
     if (validateAnchors(fixedAnchors, width)) {
-      return { 
-        width, 
-        height, 
-        anchors: fixedAnchors, 
-        difficulty: paths.length, 
-        solvedPaths: paths 
+      return {
+        width,
+        height,
+        anchors: fixedAnchors,
+        difficulty: paths.length,
+        solvedPaths: paths
       };
     }
   }
-  
-  const level: LevelData = { 
-    width, 
-    height, 
-    anchors, 
-    difficulty: paths.length, 
-    solvedPaths: paths 
+
+  const level: LevelData = {
+    width,
+    height,
+    anchors,
+    difficulty: paths.length,
+    solvedPaths: paths
   };
   return level;
 };
-

@@ -51,47 +51,47 @@ class AudioEngine {
 
   async playPopSound(colorId: number = 0) {
     if (!this.isEnabled) return;
-    
+
     await this.ensureAudioContext();
     if (!this.audioContext || !this.masterGain) return;
 
     const frequency = COLOR_NOTES[colorId % Object.keys(COLOR_NOTES).length] || 440;
     const oscillator = this.audioContext.createOscillator();
     const gainNode = this.audioContext.createGain();
-    
+
     oscillator.type = 'sine';
     oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
     // Quick attack (1ms) with exponential decay for percussive "pop" sound
     gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
     gainNode.gain.linearRampToValueAtTime(0.3, this.audioContext.currentTime + 0.01);
     gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.1);
-    
+
     oscillator.connect(gainNode);
     if (this.masterGain) {
       gainNode.connect(this.masterGain);
     }
-    
+
     oscillator.start(this.audioContext.currentTime);
     oscillator.stop(this.audioContext.currentTime + 0.1);
   }
 
   async playGlissando(colors: number[] = [0, 1, 2, 3, 4]) {
     if (!this.isEnabled) return;
-    
+
     await this.ensureAudioContext();
     if (!this.audioContext || !this.masterGain) return;
 
     const duration = 0.6;
     const noteDuration = duration / colors.length;
-    
+
     // Play notes in sequence with slight overlap for smooth glissando effect
     colors.forEach((colorId, index) => {
       const frequency = COLOR_NOTES[colorId % Object.keys(COLOR_NOTES).length] || 440;
       const startTime = this.audioContext!.currentTime + (index * noteDuration);
-      
+
       const oscillator = this.audioContext!.createOscillator();
       const gainNode = this.audioContext!.createGain();
-      
+
       oscillator.type = 'sine';
       oscillator.frequency.setValueAtTime(frequency, startTime);
       // Smooth attack and release with sustained middle for legato effect
@@ -99,12 +99,12 @@ class AudioEngine {
       gainNode.gain.linearRampToValueAtTime(0.2, startTime + 0.05);
       gainNode.gain.linearRampToValueAtTime(0.2, startTime + noteDuration - 0.05);
       gainNode.gain.linearRampToValueAtTime(0, startTime + noteDuration);
-      
+
       oscillator.connect(gainNode);
       if (this.masterGain) {
         gainNode.connect(this.masterGain);
       }
-      
+
       oscillator.start(startTime);
       oscillator.stop(startTime + noteDuration);
     });
@@ -112,28 +112,28 @@ class AudioEngine {
 
   async playColorNote(colorId: number, duration: number = 0.2) {
     if (!this.isEnabled) return;
-    
+
     await this.ensureAudioContext();
     if (!this.audioContext || !this.masterGain) return;
 
     const frequency = COLOR_NOTES[colorId % Object.keys(COLOR_NOTES).length] || 440;
-    
+
     const oscillator = this.audioContext.createOscillator();
     const gainNode = this.audioContext.createGain();
-    
+
     oscillator.type = 'sine';
     oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
-    
+
     gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
     gainNode.gain.linearRampToValueAtTime(0.2, this.audioContext.currentTime + 0.01);
     gainNode.gain.linearRampToValueAtTime(0.2, this.audioContext.currentTime + duration - 0.05);
     gainNode.gain.linearRampToValueAtTime(0, this.audioContext.currentTime + duration);
-    
+
     oscillator.connect(gainNode);
     if (this.masterGain) {
       gainNode.connect(this.masterGain);
     }
-    
+
     oscillator.start(this.audioContext.currentTime);
     oscillator.stop(this.audioContext.currentTime + duration);
   }
@@ -148,4 +148,3 @@ class AudioEngine {
 }
 
 export const audioEngine = new AudioEngine();
-

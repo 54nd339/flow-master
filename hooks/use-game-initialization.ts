@@ -34,4 +34,3 @@ export const useGameInitialization = () => {
 
   return mounted;
 };
-

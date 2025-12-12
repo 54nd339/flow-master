@@ -46,14 +46,14 @@ export const startLevel = (
   const stageConfig = STAGES.find((s) => s.id === stageId) || STAGES[0];
   const historyList = progress.history[stageId] || [];
   const levelIndexToPlay = targetLevelIdx !== null ? targetLevelIdx : Math.max(0, progress.level - 1);
-  
+
   // Check for pre-generated level first
   if (shiftPreGeneratedLevel) {
     const preGenerated = shiftPreGeneratedLevel();
     if (preGenerated && preGenerated.width === stageConfig.w && preGenerated.height === stageConfig.h) {
       setLevelData(preGenerated);
       setIsGenerating(false);
-      
+
       // Pre-generate only 1 level in background, with delay to avoid blocking UI
       if (addPreGeneratedLevel && setProgress) {
         // Wait 2 seconds before starting pre-generation to let UI settle
@@ -61,7 +61,7 @@ export const startLevel = (
           const nextLevelIndex = levelIndexToPlay + 1;
           const nextStageId = nextLevelIndex >= LEVELS_PER_STAGE ? stageId + 1 : stageId;
           const nextLevelIdx = nextLevelIndex >= LEVELS_PER_STAGE ? 0 : nextLevelIndex;
-          
+
           if (nextStageId <= STAGES.length) {
             // Pre-generate only next level (reduced from 2 to 1)
             preGenerateCampaignLevel(nextStageId, nextLevelIdx, progress, (level) => {
@@ -110,20 +110,20 @@ export const startLevel = (
             const updatedHashes = addLevelHash(data.hash, progress.generatedLevelHashes || []);
             setProgress({ generatedLevelHashes: updatedHashes });
           }
-          
+
           if (setLevelValidationError) {
             setLevelValidationError(null);
           }
-          
+
           setLevelData(data.level);
-          
+
           // Pre-generate only 1 level in background, with delay to avoid blocking UI
           if (addPreGeneratedLevel && setProgress) {
             setTimeout(() => {
               const nextLevelIndex = levelIndexToPlay + 1;
               const nextStageId = nextLevelIndex >= LEVELS_PER_STAGE ? stageId + 1 : stageId;
               const nextLevelIdx = nextLevelIndex >= LEVELS_PER_STAGE ? 0 : nextLevelIndex;
-              
+
               if (nextStageId <= STAGES.length) {
                 preGenerateCampaignLevel(nextStageId, nextLevelIdx, progress, (level) => {
                   if (level && addPreGeneratedLevel) {
@@ -133,7 +133,7 @@ export const startLevel = (
               }
             }, 2000);
           }
-          
+
           setIsGenerating(false);
           return;
         } else if (data.clientShouldGenerate) {
@@ -153,158 +153,157 @@ export const startLevel = (
   // Client-side generation (original implementation with async chunks)
   const clientSideGeneration = () => {
     setTimeout(() => {
-    try {
-      // Try to load existing level from history (for replay consistency)
-      if (historyList[levelIndexToPlay]) {
-        const loadedLevel = decompressLevel(historyList[levelIndexToPlay]);
-        if (loadedLevel && loadedLevel.width === stageConfig.w && loadedLevel.height === stageConfig.h) {
-          setLevelData(loadedLevel);
-          setIsGenerating(false);
-          return;
-        }
-      }
-
-      // Generate new unique level: avoid duplicates by comparing anchor positions
-      // Check against both stage history and global generated levels across all game modes
-      let newLevel: LevelData | null = null;
-      let isUnique = false;
-      let attempts = 0;
-      const stageHashes = new Set(
-        historyList.map((str) => {
-          const lvl = decompressLevel(str);
-          return lvl ? generateLevelHash(lvl) : null;
-        }).filter((h): h is string => h !== null)
-      );
-      const globalHashes = new Set(progress.generatedLevelHashes || []);
-      const allExistingHashes = new Set([...stageHashes, ...globalHashes]);
-      const pal = getCurrentPalette(progress);
-      
-      // Calculate dynamic color counts based on grid size
-      const { minC, maxC } = calculateColorCounts(stageConfig.w, stageConfig.h, pal.length);
-
-      // Use requestIdleCallback with setTimeout fallback to yield control between attempts
-      const scheduleNextAttempt = (callback: () => void) => {
-        if (typeof requestIdleCallback !== 'undefined') {
-          requestIdleCallback(callback, { timeout: 50 });
-        } else {
-          setTimeout(callback, 0);
-        }
-      };
-
-      const tryGenerate = () => {
-        if (isUnique || attempts >= 20) {
-          if (!isUnique && setGenerationWarning) {
-            setGenerationWarning('Replaying random level.');
+      try {
+        // Try to load existing level from history (for replay consistency)
+        if (historyList[levelIndexToPlay]) {
+          const loadedLevel = decompressLevel(historyList[levelIndexToPlay]);
+          if (loadedLevel && loadedLevel.width === stageConfig.w && loadedLevel.height === stageConfig.h) {
+            setLevelData(loadedLevel);
+            setIsGenerating(false);
+            return;
           }
-          
-          // If level was found but validation failed, show warning
-          if (newLevel && !isUnique && setLevelValidationError) {
-            const finalValidation = validateNumberlinkRules(newLevel);
-            if (!finalValidation.isValid) {
-              setLevelValidationError(finalValidation.error || 'Level validation failed');
-              if (setGenerationWarning) {
-                setGenerationWarning('Generated level may have issues. Consider regenerating.');
+        }
+
+        // Generate new unique level: avoid duplicates by comparing anchor positions
+        // Check against both stage history and global generated levels across all game modes
+        let newLevel: LevelData | null = null;
+        let isUnique = false;
+        let attempts = 0;
+        const stageHashes = new Set(
+          historyList.map((str) => {
+            const lvl = decompressLevel(str);
+            return lvl ? generateLevelHash(lvl) : null;
+          }).filter((h): h is string => h !== null)
+        );
+        const globalHashes = new Set(progress.generatedLevelHashes || []);
+        const allExistingHashes = new Set([...stageHashes, ...globalHashes]);
+        const pal = getCurrentPalette(progress);
+
+        // Calculate dynamic color counts based on grid size
+        const { minC, maxC } = calculateColorCounts(stageConfig.w, stageConfig.h, pal.length);
+
+        // Use requestIdleCallback with setTimeout fallback to yield control between attempts
+        const scheduleNextAttempt = (callback: () => void) => {
+          if (typeof requestIdleCallback !== 'undefined') {
+            requestIdleCallback(callback, { timeout: 50 });
+          } else {
+            setTimeout(callback, 0);
+          }
+        };
+
+        const tryGenerate = () => {
+          if (isUnique || attempts >= 20) {
+            if (!isUnique && setGenerationWarning) {
+              setGenerationWarning('Replaying random level.');
+            }
+
+            // If level was found but validation failed, show warning
+            if (newLevel && !isUnique && setLevelValidationError) {
+              const finalValidation = validateNumberlinkRules(newLevel);
+              if (!finalValidation.isValid) {
+                setLevelValidationError(finalValidation.error || 'Level validation failed');
+                if (setGenerationWarning) {
+                  setGenerationWarning('Generated level may have issues. Consider regenerating.');
+                }
               }
             }
-          }
-          
-          setLevelData(newLevel);
-          
-          // Pre-generate only 1 level in background, with delay to avoid blocking UI
-          if (addPreGeneratedLevel && setProgress) {
-            // Wait 2 seconds before starting pre-generation to let UI settle
-            setTimeout(() => {
-              const nextLevelIndex = levelIndexToPlay + 1;
-              const nextStageId = nextLevelIndex >= LEVELS_PER_STAGE ? stageId + 1 : stageId;
-              const nextLevelIdx = nextLevelIndex >= LEVELS_PER_STAGE ? 0 : nextLevelIndex;
-              
-              if (nextStageId <= STAGES.length) {
-                // Pre-generate only next level (reduced from 2 to 1)
-                preGenerateCampaignLevel(nextStageId, nextLevelIdx, progress, (level) => {
-                  if (level && addPreGeneratedLevel) {
-                    addPreGeneratedLevel(level);
-                  }
-                });
-              }
-            }, 2000);
-          }
-          
-          setIsGenerating(false);
-          return;
-        }
 
-        // Generate one attempt
-        const result = generateLevel(stageConfig.w, stageConfig.h, minC, maxC, pal);
-        newLevel = result.level;
-        
-        // Validate the level against Numberlink rules
-        const validation = validateNumberlinkRules(newLevel);
-        if (!validation.isValid) {
-          if (setLevelValidationError) {
-            setLevelValidationError(validation.error || 'Level validation failed');
-          }
-          attempts++;
-          scheduleNextAttempt(tryGenerate);
-          return;
-        }
-        
-        const hash = generateLevelHash(newLevel);
-        if (!allExistingHashes.has(hash)) {
-          isUnique = true;
-          if (setProgress) {
-            const updatedHashes = addLevelHash(hash, progress.generatedLevelHashes || []);
-            setProgress({ generatedLevelHashes: updatedHashes });
-          }
-          
-          if (setLevelUsedFallback) {
-            setLevelUsedFallback(result.usedFallback);
-          }
-          if (setLevelValidationError) {
-            setLevelValidationError(null);
-          }
-          
-          setLevelData(newLevel);
-          
-          // Pre-generate only 1 level in background, with delay to avoid blocking UI
-          if (addPreGeneratedLevel && setProgress) {
-            // Wait 2 seconds before starting pre-generation to let UI settle
-            setTimeout(() => {
-              const nextLevelIndex = levelIndexToPlay + 1;
-              const nextStageId = nextLevelIndex >= LEVELS_PER_STAGE ? stageId + 1 : stageId;
-              const nextLevelIdx = nextLevelIndex >= LEVELS_PER_STAGE ? 0 : nextLevelIndex;
-              
-              if (nextStageId <= STAGES.length) {
-                // Pre-generate only next level (reduced from 2 to 1)
-                preGenerateCampaignLevel(nextStageId, nextLevelIdx, progress, (level) => {
-                  if (level && addPreGeneratedLevel) {
-                    addPreGeneratedLevel(level);
-                  }
-                });
-              }
-            }, 2000);
-          }
-          
-          setIsGenerating(false);
-        } else {
-          attempts++;
-          scheduleNextAttempt(tryGenerate);
-        }
-      };
+            setLevelData(newLevel);
 
-      // Start the async generation loop
-      tryGenerate();
-    } catch (err) {
-      console.error(err);
-      const fallbackPalette = getCurrentPalette({ themeId: 'WATER' } as any);
-      const { minC, maxC } = calculateColorCounts(5, 5, fallbackPalette.length);
-      const result = generateLevel(5, 5, minC, maxC, fallbackPalette);
-      setLevelData(result.level);
-      setIsGenerating(false);
-    }
+            // Pre-generate only 1 level in background, with delay to avoid blocking UI
+            if (addPreGeneratedLevel && setProgress) {
+              // Wait 2 seconds before starting pre-generation to let UI settle
+              setTimeout(() => {
+                const nextLevelIndex = levelIndexToPlay + 1;
+                const nextStageId = nextLevelIndex >= LEVELS_PER_STAGE ? stageId + 1 : stageId;
+                const nextLevelIdx = nextLevelIndex >= LEVELS_PER_STAGE ? 0 : nextLevelIndex;
+
+                if (nextStageId <= STAGES.length) {
+                  // Pre-generate only next level (reduced from 2 to 1)
+                  preGenerateCampaignLevel(nextStageId, nextLevelIdx, progress, (level) => {
+                    if (level && addPreGeneratedLevel) {
+                      addPreGeneratedLevel(level);
+                    }
+                  });
+                }
+              }, 2000);
+            }
+
+            setIsGenerating(false);
+            return;
+          }
+
+          // Generate one attempt
+          const result = generateLevel(stageConfig.w, stageConfig.h, minC, maxC, pal);
+          newLevel = result.level;
+
+          // Validate the level against Numberlink rules
+          const validation = validateNumberlinkRules(newLevel);
+          if (!validation.isValid) {
+            if (setLevelValidationError) {
+              setLevelValidationError(validation.error || 'Level validation failed');
+            }
+            attempts++;
+            scheduleNextAttempt(tryGenerate);
+            return;
+          }
+
+          const hash = generateLevelHash(newLevel);
+          if (!allExistingHashes.has(hash)) {
+            isUnique = true;
+            if (setProgress) {
+              const updatedHashes = addLevelHash(hash, progress.generatedLevelHashes || []);
+              setProgress({ generatedLevelHashes: updatedHashes });
+            }
+
+            if (setLevelUsedFallback) {
+              setLevelUsedFallback(result.usedFallback);
+            }
+            if (setLevelValidationError) {
+              setLevelValidationError(null);
+            }
+
+            setLevelData(newLevel);
+
+            // Pre-generate only 1 level in background, with delay to avoid blocking UI
+            if (addPreGeneratedLevel && setProgress) {
+              // Wait 2 seconds before starting pre-generation to let UI settle
+              setTimeout(() => {
+                const nextLevelIndex = levelIndexToPlay + 1;
+                const nextStageId = nextLevelIndex >= LEVELS_PER_STAGE ? stageId + 1 : stageId;
+                const nextLevelIdx = nextLevelIndex >= LEVELS_PER_STAGE ? 0 : nextLevelIndex;
+
+                if (nextStageId <= STAGES.length) {
+                  // Pre-generate only next level (reduced from 2 to 1)
+                  preGenerateCampaignLevel(nextStageId, nextLevelIdx, progress, (level) => {
+                    if (level && addPreGeneratedLevel) {
+                      addPreGeneratedLevel(level);
+                    }
+                  });
+                }
+              }, 2000);
+            }
+
+            setIsGenerating(false);
+          } else {
+            attempts++;
+            scheduleNextAttempt(tryGenerate);
+          }
+        };
+
+        // Start the async generation loop
+        tryGenerate();
+      } catch (err) {
+        console.error(err);
+        const fallbackPalette = getCurrentPalette({ themeId: 'WATER' } as any);
+        const { minC, maxC } = calculateColorCounts(5, 5, fallbackPalette.length);
+        const result = generateLevel(5, 5, minC, maxC, fallbackPalette);
+        setLevelData(result.level);
+        setIsGenerating(false);
+      }
     }, 50);
   };
 
   // Start with server-side generation
   tryServerGeneration();
 };
-

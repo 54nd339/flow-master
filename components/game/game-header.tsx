@@ -10,7 +10,7 @@ import { getActiveTheme } from '@/utils';
 export const GameHeader: React.FC = React.memo(() => {
   const { progress, viewMode, setShowStageSelect, levelData } = useGameStore();
   const activeTheme = getActiveTheme(progress);
-  
+
   const currentRank = React.useMemo(() => {
     const currentGroupIdx = Math.ceil(progress.stage / 5) - 1;
     return activeTheme.ranks[Math.min(currentGroupIdx, 4)] || activeTheme.ranks[0];
@@ -20,7 +20,7 @@ export const GameHeader: React.FC = React.memo(() => {
     () => viewMode === 'PLAY' || viewMode === 'DAILY' || viewMode === 'TIME_ATTACK' || viewMode === 'ZEN',
     [viewMode]
   );
-  
+
   const handleMapClick = React.useCallback(() => {
     setShowStageSelect(true);
   }, [setShowStageSelect]);
@@ -37,7 +37,7 @@ export const GameHeader: React.FC = React.memo(() => {
               FLOW <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-white/60">MASTER</span>
             </h1>
           </div>
-          
+
           <div className="flex items-center gap-1 px-2 py-1 bg-yellow-500/20 rounded-lg border border-yellow-500/30">
             <Coins size={12} className="text-yellow-400" />
             <span className="text-xs font-black text-white">{progress.flows || 0}</span>
@@ -84,5 +84,3 @@ export const GameHeader: React.FC = React.memo(() => {
 });
 
 GameHeader.displayName = 'GameHeader';
-
-

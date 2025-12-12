@@ -110,16 +110,16 @@ export const isPathComplete = (
   colorId: number
 ): boolean => {
   if (userPath.length === 0) return false;
-  
+
   const colorAnchors = Object.entries(levelData.anchors)
     .filter(([_, anchor]) => anchor.colorId === colorId)
     .map(([idx]) => parseInt(idx));
-  
+
   if (colorAnchors.length !== 2) return false;
-  
+
   const start = userPath[0];
   const end = userPath[userPath.length - 1];
-  
+
   return colorAnchors.includes(start) && colorAnchors.includes(end) && start !== end;
 };
 
@@ -224,4 +224,3 @@ export const handlePathMovement = (
     shouldIncrementMove: true,
   };
 };
-

@@ -9,7 +9,7 @@ export interface UIStateSlice {
   showStageSelect: boolean;
   showThemeSelect: boolean;
   showRankUp: RankUp | null;
-  
+
   setViewMode: (mode: ViewMode) => void;
   setShowStageSelect: (show: boolean) => void;
   setShowThemeSelect: (show: boolean) => void;
@@ -27,4 +27,3 @@ export const createUIStateSlice = (set: SetState): UIStateSlice => ({
   setShowThemeSelect: (show) => set({ showThemeSelect: show }),
   setShowRankUp: (rankUp) => set({ showRankUp: rankUp }),
 });
-

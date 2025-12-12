@@ -34,10 +34,10 @@ export const handleNextLevel = (
     store.resetMoveCount();
     store.clearMoveHistory();
     const latestProgress = store.progress;
-    const { 
-      setLevelData: updateLevelData, 
-      setIsGenerating, 
-      setGenerationWarning: updateWarning, 
+    const {
+      setLevelData: updateLevelData,
+      setIsGenerating,
+      setGenerationWarning: updateWarning,
       setProgress,
       shiftPreGeneratedLevel,
       addPreGeneratedLevel,
@@ -45,4 +45,3 @@ export const handleNextLevel = (
     startLevel(null, null, latestProgress, updateLevelData, setIsGenerating, updateWarning, setProgress, undefined, undefined, shiftPreGeneratedLevel, addPreGeneratedLevel);
   }
 };
-

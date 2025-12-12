@@ -15,4 +15,3 @@ export const getCurrentPalette = (progress: GameProgress) => {
   const theme = getActiveTheme(progress);
   return theme.palette || THEME_PRESETS.WATER.palette;
 };
-

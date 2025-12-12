@@ -17,4 +17,3 @@ export { logError } from './error-logger';
 // Server-only exports removed - import directly from their modules in server-side code
 // export { startBackgroundGenerationAsync } from './background-generator';
 // export { getServerPalette } from './server-palettes';
-

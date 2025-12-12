@@ -45,4 +45,3 @@ export const useSoundSettings = () => {
   const music = useGameStore((state) => state.progress.music);
   return { sound, music };
 };
-

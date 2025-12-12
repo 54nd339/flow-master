@@ -94,4 +94,3 @@ export const BottomNav: React.FC = React.memo(() => {
 });
 
 BottomNav.displayName = 'BottomNav';
-

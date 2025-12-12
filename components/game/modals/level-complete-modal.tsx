@@ -10,9 +10,9 @@ import { handleShareImage, handleDownloadImage, handleShareUrl, handleNextLevel,
 const STAR_ARRAY = [0, 1, 2] as const;
 
 export const LevelCompleteModal: React.FC = () => {
-  const { 
-    isLevelComplete, 
-    progress, 
+  const {
+    isLevelComplete,
+    progress,
     levelData,
     userPaths,
     viewMode,
@@ -29,7 +29,7 @@ export const LevelCompleteModal: React.FC = () => {
   const [showShareMenu, setShowShareMenu] = useState(false);
   const { showToast } = useToast();
   const activeTheme = getActiveTheme(progress);
-  
+
   const currentRank = React.useMemo(() => {
     const currentGroupIdx = Math.ceil(progress.stage / 5) - 1;
     return activeTheme.ranks[Math.min(currentGroupIdx, 4)] || activeTheme.ranks[0];
@@ -83,11 +83,11 @@ export const LevelCompleteModal: React.FC = () => {
       handleProgressSave
     );
   }, [viewMode, setIsLevelComplete, setUserPaths, setActiveColor, setGenerationWarning, setLevelData, handleProgressSave]);
-  
+
   const handleShareMenuToggle = React.useCallback(() => {
     setShowShareMenu((prev) => !prev);
   }, []);
-  
+
   const handleShareMenuClose = React.useCallback(() => {
     setShowShareMenu(false);
   }, []);
@@ -114,14 +114,14 @@ export const LevelCompleteModal: React.FC = () => {
       <p className="text-white/50 font-medium mb-4">
         {viewMode === 'DAILY' ? 'Daily Challenge Complete!' : viewMode === 'ZEN' ? 'Puzzle Complete!' : 'Zone Cleared'}
       </p>
-      
+
       {levelCompletionTime !== null && levelCompletionTime > 0 && (
         <div className="mb-4 flex items-center justify-center gap-2 text-white/70">
           <Clock size={16} />
           <span className="text-sm font-medium">Time: {formatTimeMMSS(levelCompletionTime)}</span>
         </div>
       )}
-      
+
       {perfectScore && (
         <div className="mb-4 flex items-center justify-center gap-3 bg-white/10 rounded-xl p-3 border border-white/20">
           <div className="text-white text-sm font-bold">
@@ -157,8 +157,8 @@ export const LevelCompleteModal: React.FC = () => {
             </Button>
             {showShareMenu && (
               <>
-                <div 
-                  className="fixed inset-0 z-[50]" 
+                <div
+                  className="fixed inset-0 z-[50]"
                   onClick={handleShareMenuClose}
                 />
                 <motion.div
@@ -167,27 +167,27 @@ export const LevelCompleteModal: React.FC = () => {
                   exit={{ opacity: 0, y: -10 }}
                   className="absolute bottom-full left-0 mb-2 w-full bg-slate-800 border border-white/10 rounded-xl overflow-hidden shadow-2xl z-[70]"
                 >
-                <button
-                  onClick={handleShareImageClick}
-                  className="w-full p-3 flex items-center gap-3 text-left hover:bg-white/5 transition-colors text-white"
-                >
-                  <Share2 size={18} />
-                  <span className="text-sm font-medium">Share Image</span>
-                </button>
-                <button
-                  onClick={handleDownloadImageClick}
-                  className="w-full p-3 flex items-center gap-3 text-left hover:bg-white/5 transition-colors text-white border-t border-white/10"
-                >
-                  <Download size={18} />
-                  <span className="text-sm font-medium">Download Image</span>
-                </button>
-                <button
-                  onClick={handleShareUrlClick}
-                  className="w-full p-3 flex items-center gap-3 text-left hover:bg-white/5 transition-colors text-white border-t border-white/10"
-                >
-                  <Link2 size={18} />
-                  <span className="text-sm font-medium">Share Level URL</span>
-                </button>
+                  <button
+                    onClick={handleShareImageClick}
+                    className="w-full p-3 flex items-center gap-3 text-left hover:bg-white/5 transition-colors text-white"
+                  >
+                    <Share2 size={18} />
+                    <span className="text-sm font-medium">Share Image</span>
+                  </button>
+                  <button
+                    onClick={handleDownloadImageClick}
+                    className="w-full p-3 flex items-center gap-3 text-left hover:bg-white/5 transition-colors text-white border-t border-white/10"
+                  >
+                    <Download size={18} />
+                    <span className="text-sm font-medium">Download Image</span>
+                  </button>
+                  <button
+                    onClick={handleShareUrlClick}
+                    className="w-full p-3 flex items-center gap-3 text-left hover:bg-white/5 transition-colors text-white border-t border-white/10"
+                  >
+                    <Link2 size={18} />
+                    <span className="text-sm font-medium">Share Level URL</span>
+                  </button>
                 </motion.div>
               </>
             )}
@@ -211,4 +211,3 @@ export const LevelCompleteModal: React.FC = () => {
     </motion.div>
   );
 };
-

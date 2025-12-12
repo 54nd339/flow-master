@@ -18,5 +18,3 @@ export const GRID = {
   MAX_HEIGHT_VH: 65,
   MINI_MAP_SIZE: 32,
 } as const;
-
-

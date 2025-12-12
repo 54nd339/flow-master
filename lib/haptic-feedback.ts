@@ -35,4 +35,3 @@ class HapticFeedback {
 }
 
 export const hapticFeedback = new HapticFeedback();
-

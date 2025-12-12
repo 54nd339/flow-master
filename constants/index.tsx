@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { 
-  ArrowRight, Grid, Wand2, CheckCircle2, 
-  Crown, Zap, Waves, Cpu, BrainCircuit, 
+import {
+  ArrowRight, Grid, Wand2, CheckCircle2,
+  Crown, Zap, Waves, Cpu, BrainCircuit,
   Sun, Sparkles, Leaf, Eye
 } from 'lucide-react';
 import { ThemePreset } from '@/types';
@@ -20,10 +20,10 @@ export const THEME_PRESETS: Record<string, ThemePreset> = {
       { name: "Superfluid Architect", color: "from-cyan-400 to-blue-600", icon: Crown },
     ],
     palette: [
-      { id: 0, hex: '#0ea5e9' }, { id: 1, hex: '#3b82f6' }, { id: 2, hex: '#1d4ed8' }, 
-      { id: 3, hex: '#06b6d4' }, { id: 4, hex: '#6366f1' }, { id: 5, hex: '#8b5cf6' }, 
-      { id: 6, hex: '#a855f7' }, { id: 7, hex: '#2563eb' }, { id: 8, hex: '#0284c7' }, 
-      { id: 9, hex: '#7dd3fc' }, { id: 10, hex: '#818cf8' }, { id: 11, hex: '#1e40af' }, 
+      { id: 0, hex: '#0ea5e9' }, { id: 1, hex: '#3b82f6' }, { id: 2, hex: '#1d4ed8' },
+      { id: 3, hex: '#06b6d4' }, { id: 4, hex: '#6366f1' }, { id: 5, hex: '#8b5cf6' },
+      { id: 6, hex: '#a855f7' }, { id: 7, hex: '#2563eb' }, { id: 8, hex: '#0284c7' },
+      { id: 9, hex: '#7dd3fc' }, { id: 10, hex: '#818cf8' }, { id: 11, hex: '#1e40af' },
       { id: 12, hex: '#60a5fa' }, { id: 13, hex: '#a78bfa' }, { id: 14, hex: '#22d3ee' },
       { id: 15, hex: '#0c4a6e' }, { id: 16, hex: '#1e3a8a' }, { id: 17, hex: '#3730a3' },
       { id: 18, hex: '#4c1d95' }, { id: 19, hex: '#581c87' },
@@ -33,8 +33,8 @@ export const THEME_PRESETS: Record<string, ThemePreset> = {
         <path d="M0 50 Q 25 60 50 50 T 100 50 V 100 H 0 Z" fill="url(#grad1)" className="animate-wave-slow" />
         <defs>
           <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#0ea5e9" stopOpacity="0.2"/>
-            <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.8"/>
+            <stop offset="0%" stopColor="#0ea5e9" stopOpacity="0.2" />
+            <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.8" />
           </linearGradient>
         </defs>
         <style>{`.animate-wave-slow { animation: wave 10s infinite linear alternate; } @keyframes wave { from { d: path("M0 50 Q 25 40 50 50 T 100 50 V 100 H 0 Z"); } to { d: path("M0 50 Q 25 60 50 50 T 100 50 V 100 H 0 Z"); } }`}</style>
@@ -52,10 +52,10 @@ export const THEME_PRESETS: Record<string, ThemePreset> = {
       { name: "Superconductor", color: "from-blue-500 to-cyan-400", icon: Sparkles },
     ],
     palette: [
-      { id: 0, hex: '#eab308' }, { id: 1, hex: '#f59e0b' }, { id: 2, hex: '#f97316' }, 
-      { id: 3, hex: '#ef4444' }, { id: 4, hex: '#dc2626' }, { id: 5, hex: '#84cc16' }, 
-      { id: 6, hex: '#10b981' }, { id: 7, hex: '#06b6d4' }, { id: 8, hex: '#3b82f6' }, 
-      { id: 9, hex: '#6366f1' }, { id: 10, hex: '#d946ef' }, { id: 11, hex: '#ec4899' }, 
+      { id: 0, hex: '#eab308' }, { id: 1, hex: '#f59e0b' }, { id: 2, hex: '#f97316' },
+      { id: 3, hex: '#ef4444' }, { id: 4, hex: '#dc2626' }, { id: 5, hex: '#84cc16' },
+      { id: 6, hex: '#10b981' }, { id: 7, hex: '#06b6d4' }, { id: 8, hex: '#3b82f6' },
+      { id: 9, hex: '#6366f1' }, { id: 10, hex: '#d946ef' }, { id: 11, hex: '#ec4899' },
       { id: 12, hex: '#f43f5e' }, { id: 13, hex: '#fde047' }, { id: 14, hex: '#ffffff' },
       { id: 15, hex: '#ca8a04' }, { id: 16, hex: '#b45309' }, { id: 17, hex: '#92400e' },
       { id: 18, hex: '#78350f' }, { id: 19, hex: '#fbbf24' },
@@ -78,10 +78,10 @@ export const THEME_PRESETS: Record<string, ThemePreset> = {
       { name: "Singularity", color: "from-fuchsia-500 to-white", icon: Crown },
     ],
     palette: [
-      { id: 0, hex: '#ec4899' }, { id: 1, hex: '#d946ef' }, { id: 2, hex: '#a855f7' }, 
-      { id: 3, hex: '#8b5cf6' }, { id: 4, hex: '#6366f1' }, { id: 5, hex: '#3b82f6' }, 
-      { id: 6, hex: '#f43f5e' }, { id: 7, hex: '#be123c' }, { id: 8, hex: '#4c1d95' }, 
-      { id: 9, hex: '#1e1b4b' }, { id: 10, hex: '#e879f9' }, { id: 11, hex: '#c084fc' }, 
+      { id: 0, hex: '#ec4899' }, { id: 1, hex: '#d946ef' }, { id: 2, hex: '#a855f7' },
+      { id: 3, hex: '#8b5cf6' }, { id: 4, hex: '#6366f1' }, { id: 5, hex: '#3b82f6' },
+      { id: 6, hex: '#f43f5e' }, { id: 7, hex: '#be123c' }, { id: 8, hex: '#4c1d95' },
+      { id: 9, hex: '#1e1b4b' }, { id: 10, hex: '#e879f9' }, { id: 11, hex: '#c084fc' },
       { id: 12, hex: '#818cf8' }, { id: 13, hex: '#22d3ee' }, { id: 14, hex: '#fb7185' },
       { id: 15, hex: '#f472b6' }, { id: 16, hex: '#ec4899' }, { id: 17, hex: '#db2777' },
       { id: 18, hex: '#be185d' }, { id: 19, hex: '#9f1239' },
@@ -89,7 +89,7 @@ export const THEME_PRESETS: Record<string, ThemePreset> = {
     bg: (idx) => (
       <svg className="absolute inset-0 w-full h-full opacity-10" viewBox="0 0 100 100">
         <circle cx="20" cy="20" r="2" fill="currentColor" className="animate-pulse" />
-        <circle cx="80" cy="80" r="3" fill="currentColor" className="animate-pulse" style={{animationDelay:'1s'}} />
+        <circle cx="80" cy="80" r="3" fill="currentColor" className="animate-pulse" style={{ animationDelay: '1s' }} />
         <line x1="20" y1="20" x2="80" y2="80" stroke="currentColor" strokeWidth="0.2" />
         <line x1="20" y1="80" x2="80" y2="20" stroke="currentColor" strokeWidth="0.2" />
       </svg>
@@ -106,10 +106,10 @@ export const THEME_PRESETS: Record<string, ThemePreset> = {
       { name: "Photon Master", color: "from-violet-500 to-fuchsia-500", icon: Sparkles },
     ],
     palette: [
-      { id: 0, hex: '#ff0000' }, { id: 1, hex: '#00ff00' }, { id: 2, hex: '#0000ff' }, 
-      { id: 3, hex: '#ffff00' }, { id: 4, hex: '#ff00ff' }, { id: 5, hex: '#00ffff' }, 
-      { id: 6, hex: '#ff8800' }, { id: 7, hex: '#8800ff' }, { id: 8, hex: '#00ff88' }, 
-      { id: 9, hex: '#ff0088' }, { id: 10, hex: '#88ff00' }, { id: 11, hex: '#0088ff' }, 
+      { id: 0, hex: '#ff0000' }, { id: 1, hex: '#00ff00' }, { id: 2, hex: '#0000ff' },
+      { id: 3, hex: '#ffff00' }, { id: 4, hex: '#ff00ff' }, { id: 5, hex: '#00ffff' },
+      { id: 6, hex: '#ff8800' }, { id: 7, hex: '#8800ff' }, { id: 8, hex: '#00ff88' },
+      { id: 9, hex: '#ff0088' }, { id: 10, hex: '#88ff00' }, { id: 11, hex: '#0088ff' },
       { id: 12, hex: '#ffffff' }, { id: 13, hex: '#aaaaaa' }, { id: 14, hex: '#444444' },
       { id: 15, hex: '#ff4444' }, { id: 16, hex: '#44ff44' }, { id: 17, hex: '#4444ff' },
       { id: 18, hex: '#ffff44' }, { id: 19, hex: '#ff44ff' },
@@ -132,10 +132,10 @@ export const THEME_PRESETS: Record<string, ThemePreset> = {
       { name: "Enlightened", color: "from-amber-400 to-orange-500", icon: Sun },
     ],
     palette: [
-      { id: 0, hex: '#f472b6' }, { id: 1, hex: '#22c55e' }, { id: 2, hex: '#06b6d4' }, 
-      { id: 3, hex: '#f97316' }, { id: 4, hex: '#a855f7' }, { id: 5, hex: '#ef4444' }, 
-      { id: 6, hex: '#84cc16' }, { id: 7, hex: '#0ea5e9' }, { id: 8, hex: '#eab308' }, 
-      { id: 9, hex: '#6366f1' }, { id: 10, hex: '#d946ef' }, { id: 11, hex: '#14b8a6' }, 
+      { id: 0, hex: '#f472b6' }, { id: 1, hex: '#22c55e' }, { id: 2, hex: '#06b6d4' },
+      { id: 3, hex: '#f97316' }, { id: 4, hex: '#a855f7' }, { id: 5, hex: '#ef4444' },
+      { id: 6, hex: '#84cc16' }, { id: 7, hex: '#0ea5e9' }, { id: 8, hex: '#eab308' },
+      { id: 9, hex: '#6366f1' }, { id: 10, hex: '#d946ef' }, { id: 11, hex: '#14b8a6' },
       { id: 12, hex: '#f43f5e' }, { id: 13, hex: '#d97706' }, { id: 14, hex: '#3b82f6' },
       { id: 15, hex: '#ec4899' }, { id: 16, hex: '#10b981' }, { id: 17, hex: '#0891b2' },
       { id: 18, hex: '#ea580c' }, { id: 19, hex: '#9333ea' },
@@ -159,4 +159,3 @@ export const COLOR_BLIND_SYMBOLS = [
   '21', '22', '23', '24', '25', '26', '27', '28', '29', '30',
   '31', '32', '33', '34', '35', '36', '37', '38', '39', '40',
 ];
-

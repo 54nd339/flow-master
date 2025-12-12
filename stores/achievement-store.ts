@@ -14,22 +14,22 @@ export const createAchievementStateSlice = (set: SetState, get: GetState): Achie
     const state = get();
     const newAchievements: Record<string, boolean> = { ...state.progress.achievements };
     let flowsToAdd = 0;
-    
+
     // Helper to get max time attack score
     const getMaxTimeAttackScore = () => {
       const scores = state.progress.timeAttackHighScores || {};
       const scoreValues = Object.values(scores) as number[];
       return scoreValues.length > 0 ? Math.max(...scoreValues, 0) : 0;
     };
-    
+
     // Helper to count unlocked themes
     const getUnlockedThemeCount = () => {
       return (state.progress.unlockedThemes || ['WATER']).length;
     };
-    
+
     ACHIEVEMENTS.forEach((achievement: { id: string; reward: number }) => {
       if (newAchievements[achievement.id]) return;
-      
+
       let unlocked = false;
       switch (achievement.id) {
         // First Steps
@@ -57,7 +57,7 @@ export const createAchievementStateSlice = (set: SetState, get: GetState): Achie
         case 'levels_1000':
           unlocked = state.progress.totalLevelsCompleted >= 1000;
           break;
-        
+
         // Campaign Progression
         case 'campaign_10':
           unlocked = state.progress.campaignLevelsCompleted >= 10;
@@ -83,7 +83,7 @@ export const createAchievementStateSlice = (set: SetState, get: GetState): Achie
         case 'stage_25':
           unlocked = state.progress.stage >= 25;
           break;
-        
+
         // Perfect Clears
         case 'perfect_1':
           unlocked = state.progress.perfectClears >= 1;
@@ -106,7 +106,7 @@ export const createAchievementStateSlice = (set: SetState, get: GetState): Achie
         case 'perfect_250':
           unlocked = state.progress.perfectClears >= 250;
           break;
-        
+
         // Daily Challenge Streaks
         case 'streak_3':
           unlocked = state.progress.dailyStreak >= 3;
@@ -126,7 +126,7 @@ export const createAchievementStateSlice = (set: SetState, get: GetState): Achie
         case 'streak_100':
           unlocked = state.progress.dailyStreak >= 100;
           break;
-        
+
         // Time Attack
         case 'time_attack_1':
           unlocked = (state.progress.timeAttackPuzzlesCompleted || 0) >= 1;
@@ -152,7 +152,7 @@ export const createAchievementStateSlice = (set: SetState, get: GetState): Achie
         case 'time_attack_high_20':
           unlocked = getMaxTimeAttackScore() >= 20;
           break;
-        
+
         // Currency & Economy
         case 'flows_100':
           unlocked = state.progress.flows >= 100;
@@ -175,7 +175,7 @@ export const createAchievementStateSlice = (set: SetState, get: GetState): Achie
         case 'unlock_theme_all':
           unlocked = getUnlockedThemeCount() >= 5; // All 5 themes unlocked
           break;
-        
+
         // Time Played
         case 'time_1h':
           unlocked = (state.progress.totalTimePlayed || 0) >= 3600;
@@ -193,13 +193,13 @@ export const createAchievementStateSlice = (set: SetState, get: GetState): Achie
           unlocked = (state.progress.totalTimePlayed || 0) >= 360000;
           break;
       }
-      
+
       if (unlocked) {
         newAchievements[achievement.id] = true;
         flowsToAdd += achievement.reward;
       }
     });
-    
+
     if (Object.keys(newAchievements).length > Object.keys(state.progress.achievements).length) {
       set((prevState) => ({
         progress: {
@@ -211,4 +211,3 @@ export const createAchievementStateSlice = (set: SetState, get: GetState): Achie
     }
   },
 });
-

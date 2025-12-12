@@ -11,12 +11,12 @@ import { LevelData } from '@/types';
  */
 export const calculateMinMoves = (levelData: LevelData): number => {
   if (!levelData.solvedPaths) return 0;
-  
+
   let minMoves = 0;
   levelData.solvedPaths.forEach((path) => {
     minMoves += Math.max(0, path.path.length - 1);
   });
-  
+
   return minMoves;
 };
 
@@ -55,7 +55,7 @@ export const calculatePerfectScore = (
   } else if (moves <= minMoves * 3.0) {
     stars = 1;
   }
-  
+
   return { stars, perfect };
 };
 
@@ -76,13 +76,12 @@ export const hasBacktracked = (
 ): boolean => {
   if (previousPath.length === 0) return false;
   if (currentPath.length < previousPath.length) return true;
-  
+
   for (let i = 0; i < previousPath.length - 1; i++) {
     if (currentPath[i] !== previousPath[i]) {
       return true;
     }
   }
-  
+
   return false;
 };
-

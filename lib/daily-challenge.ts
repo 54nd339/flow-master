@@ -48,4 +48,3 @@ export const isDailyChallengeSolved = (dailySolved: string | null): boolean => {
   const today = getTodayDateString();
   return dailySolved === today;
 };
-

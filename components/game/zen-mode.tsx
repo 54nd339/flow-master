@@ -42,7 +42,7 @@ export const ZenMode: React.FC = () => {
 
   const generateRandomPuzzle = useCallback(() => {
     const gridSize = Math.floor(Math.random() * (ZEN_MODE.MAX_GRID_SIZE - ZEN_MODE.MIN_GRID_SIZE + 1)) + ZEN_MODE.MIN_GRID_SIZE;
-    
+
     // Check for pre-generated level first (if it matches the random size)
     if (shiftPreGeneratedLevel) {
       const preGenerated = shiftPreGeneratedLevel();
@@ -55,7 +55,7 @@ export const ZenMode: React.FC = () => {
           clearMoveHistory,
         });
         setLevelData(preGenerated);
-        
+
         // Pre-generate next 2 levels in background
         if (addPreGeneratedLevel) {
           const { minC, maxC } = calculateColorCounts(gridSize, gridSize, palette.length);
@@ -69,17 +69,17 @@ export const ZenMode: React.FC = () => {
         return;
       }
     }
-    
+
     const { minC, maxC } = calculateColorCounts(gridSize, gridSize, palette.length);
     generateUniqueLevel(gridSize, gridSize, minC, maxC, palette);
-    
+
     // Pre-generate next 2 levels in background (with random sizes)
     if (addPreGeneratedLevel) {
       const nextSize1 = Math.floor(Math.random() * (ZEN_MODE.MAX_GRID_SIZE - ZEN_MODE.MIN_GRID_SIZE + 1)) + ZEN_MODE.MIN_GRID_SIZE;
       const nextSize2 = Math.floor(Math.random() * (ZEN_MODE.MAX_GRID_SIZE - ZEN_MODE.MIN_GRID_SIZE + 1)) + ZEN_MODE.MIN_GRID_SIZE;
       const { minC: minC1, maxC: maxC1 } = calculateColorCounts(nextSize1, nextSize1, palette.length);
       const { minC: minC2, maxC: maxC2 } = calculateColorCounts(nextSize2, nextSize2, palette.length);
-      
+
       preGenerateLevel(nextSize1, nextSize1, minC1, maxC1, palette, progress, (level) => {
         if (level) addPreGeneratedLevel(level);
       });
@@ -126,7 +126,7 @@ export const ZenMode: React.FC = () => {
             <RefreshCw size={18} />
           </Button>
         </div>
-        
+
         <div className="grid grid-cols-2 gap-2">
           <div className="p-3 bg-black/40 rounded-xl border border-white/10">
             <div className="text-xs text-white/60 mb-1">Current Grid</div>
@@ -146,4 +146,3 @@ export const ZenMode: React.FC = () => {
     </>
   );
 };
-

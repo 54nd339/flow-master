@@ -57,14 +57,14 @@ export const useLevelCompletion = () => {
 
     if (allConnected) {
       setIsLevelComplete(true);
-      
+
       // Store moveCount before resetting (needed for perfect score calculation)
       const currentMoveCount = moveCount;
-      
+
       // Calculate time taken for this level
       const completionTime = levelStartTime ? Math.floor((Date.now() - levelStartTime) / 1000) : 0;
       setLevelCompletionTime(completionTime);
-      
+
       // Update total time played
       if (completionTime > 0) {
         setProgress({
@@ -82,7 +82,7 @@ export const useLevelCompletion = () => {
       // Calculate perfect score and award flows
       if (levelData) {
         const minMoves = calculateMinMoves(levelData);
-        
+
         /**
          * Detects backtracking by comparing consecutive move history entries.
          * 
@@ -190,4 +190,3 @@ export const useLevelCompletion = () => {
     }
   }, [userPathsArray, anchorEntries, anchorKeys, levelData, isLevelComplete, setIsLevelComplete, progress, moveCount, moveHistory, setPerfectScore, levelStartTime, setLevelCompletionTime, setProgress, userPaths]);
 };
-

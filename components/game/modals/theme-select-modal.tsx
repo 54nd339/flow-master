@@ -26,14 +26,12 @@ export const ThemeSelectModal: React.FC = () => {
         <div className="text-sm font-bold text-white">Colorblind Mode</div>
         <button
           onClick={() => setProgress({ colorblind: !progress.colorblind })}
-          className={`w-12 h-6 rounded-full transition-colors relative ${
-            progress.colorblind ? 'bg-green-500' : 'bg-slate-700'
-          }`}
+          className={`w-12 h-6 rounded-full transition-colors relative ${progress.colorblind ? 'bg-green-500' : 'bg-slate-700'
+            }`}
         >
           <div
-            className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${
-              progress.colorblind ? 'translate-x-6' : ''
-            }`}
+            className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${progress.colorblind ? 'translate-x-6' : ''
+              }`}
           />
         </button>
       </div>
@@ -52,20 +50,18 @@ export const ThemeSelectModal: React.FC = () => {
                 }
               }}
               disabled={!isUnlocked}
-              className={`w-full p-4 rounded-xl border transition-all flex items-center gap-4 text-left ${
-                !isUnlocked
+              className={`w-full p-4 rounded-xl border transition-all flex items-center gap-4 text-left ${!isUnlocked
                   ? 'bg-black/60 text-white/50 border-white/5 opacity-60 cursor-not-allowed'
                   : isCurrent
-                  ? 'bg-white text-black border-white'
-                  : 'bg-white/5 text-white border-white/10 hover:bg-white/10'
-              }`}
+                    ? 'bg-white text-black border-white'
+                    : 'bg-white/5 text-white border-white/10 hover:bg-white/10'
+                }`}
             >
               <div
-                className={`w-10 h-10 rounded-full ${
-                  isUnlocked
+                className={`w-10 h-10 rounded-full ${isUnlocked
                     ? `bg-gradient-to-br ${theme.ranks[0].color}`
                     : 'bg-white/10'
-                } flex items-center justify-center text-white`}
+                  } flex items-center justify-center text-white`}
               >
                 {isUnlocked ? (
                   React.createElement(theme.ranks[0].icon, { size: 20 })
@@ -94,4 +90,3 @@ export const ThemeSelectModal: React.FC = () => {
     </Modal>
   );
 };
-
