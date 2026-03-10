@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <rect width="192" height="192" rx="40" fill="url(#bg)"/>
+  <g transform="translate(30,30)">
+    <!-- 3x3 grid lines -->
+    <line x1="0" y1="44" x2="132" y2="44" stroke="#334155" stroke-width="0.75"/>
+    <line x1="0" y1="88" x2="132" y2="88" stroke="#334155" stroke-width="0.75"/>
+    <line x1="44" y1="0" x2="44" y2="132" stroke="#334155" stroke-width="0.75"/>
+    <line x1="88" y1="0" x2="88" y2="132" stroke="#334155" stroke-width="0.75"/>
+    <!-- Flow A (blue): L-shape top -->
+    <path d="M 22 22 L 66 22 L 66 66" fill="none" stroke="#60a5fa" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="22" cy="22" r="10" fill="#60a5fa"/>
+    <circle cx="66" cy="66" r="10" fill="#60a5fa"/>
+    <!-- Flow B (orange): vertical right -->
+    <path d="M 110 22 L 110 66 L 110 110" fill="none" stroke="#fb923c" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="110" cy="22" r="10" fill="#fb923c"/>
+    <circle cx="110" cy="110" r="10" fill="#fb923c"/>
+    <!-- Flow C (green): L-shape bottom -->
+    <path d="M 22 66 L 22 110 L 66 110" fill="none" stroke="#4ade80" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="22" cy="66" r="10" fill="#4ade80"/>
+    <circle cx="66" cy="110" r="10" fill="#4ade80"/>
+  </g>
+</svg>

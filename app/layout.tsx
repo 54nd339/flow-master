@@ -9,12 +9,27 @@ const geistMono = { variable: "--font-geist-mono" };
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://flow.sandeepswain.dev"),
-  title: { default: "FlowMaster", template: "%s | FlowMaster" },
-  description: "Numberlink puzzle generator and player — grids up to 50×50, daily challenges, campaigns, and more.",
   applicationName: "FlowMaster",
+  manifest: "/manifest.webmanifest",
+  title: {
+    template: "%s | FlowMaster",
+    default: "FlowMaster — Numberlink Puzzle Generator & Player",
+  },
+  description: "Numberlink puzzle generator and player — grids up to 50×50, daily challenges, campaigns, and more.",
   keywords: ["numberlink", "puzzle", "flow", "game", "daily challenge", "campaign", "brain teaser", "logic puzzle"],
-  authors: [{ name: "FlowMaster" }],
-  creator: "FlowMaster",
+  authors: [{ name: "Sandeep Swain" }],
+  creator: "54nd339",
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icon-192.svg", sizes: "192x192", type: "image/svg+xml" },
+      { url: "/icon-512.svg", sizes: "512x512", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.svg", sizes: "180x180", type: "image/svg+xml" },
+    ],
+    shortcut: ["/icon.svg"],
+  },
   openGraph: {
     title: "FlowMaster",
     description: "Numberlink puzzle generator and player — grids up to 50×50, daily challenges, campaigns, and more.",
@@ -32,6 +47,14 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+  },
+  appleWebApp: {
+    capable: true,
+    title: "FlowMaster",
+    statusBarStyle: "black-translucent",
+  },
+  formatDetection: {
+    telephone: false,
   },
 };
 

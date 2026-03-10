@@ -66,17 +66,6 @@ class GameErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundary
   }
 }
 
-function RegisterSW() {
-  useEffect(() => {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js").catch((err) => {
-        console.warn("SW registration failed:", err);
-      });
-    }
-  }, []);
-  return null;
-}
-
 function ShakeToUndo() {
   const enabled = useShakeToUndo();
 
@@ -183,7 +172,6 @@ export default function GameLayout({ children }: { children: ReactNode }) {
           data-save-data={saveData || undefined}
         >
           {children}
-          <RegisterSW />
           <ShakeToUndo />
           <ClipboardPasteImport />
           <Toaster position="bottom-right" richColors />

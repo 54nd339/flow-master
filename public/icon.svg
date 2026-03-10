@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <style>
+    .bg { fill: #f4f4f5; }
+    .grid-line { stroke: #d4d4d8; stroke-width: 1; }
+    .path-a { fill: none; stroke: #3b82f6; stroke-width: 14; stroke-linecap: round; stroke-linejoin: round; }
+    .path-b { fill: none; stroke: #f97316; stroke-width: 14; stroke-linecap: round; stroke-linejoin: round; }
+    .path-c { fill: none; stroke: #22c55e; stroke-width: 14; stroke-linecap: round; stroke-linejoin: round; }
+    .path-d { fill: none; stroke: #8b5cf6; stroke-width: 14; stroke-linecap: round; stroke-linejoin: round; }
+    .dot-a { fill: #3b82f6; }
+    .dot-b { fill: #f97316; }
+    .dot-c { fill: #22c55e; }
+    .dot-d { fill: #8b5cf6; }
+
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #18181b; }
+      .grid-line { stroke: #3f3f46; }
+      .path-a { stroke: #60a5fa; }
+      .path-b { stroke: #fb923c; }
+      .path-c { stroke: #4ade80; }
+      .path-d { stroke: #a78bfa; }
+      .dot-a { fill: #60a5fa; }
+      .dot-b { fill: #fb923c; }
+      .dot-c { fill: #4ade80; }
+      .dot-d { fill: #a78bfa; }
+    }
+  </style>
+  <rect width="400" height="400" rx="80" class="bg"/>
+  <!-- 4x4 grid lines -->
+  <g>
+    <line x1="40" y1="120" x2="360" y2="120" class="grid-line"/>
+    <line x1="40" y1="200" x2="360" y2="200" class="grid-line"/>
+    <line x1="40" y1="280" x2="360" y2="280" class="grid-line"/>
+    <line x1="120" y1="40" x2="120" y2="360" class="grid-line"/>
+    <line x1="200" y1="40" x2="200" y2="360" class="grid-line"/>
+    <line x1="280" y1="40" x2="280" y2="360" class="grid-line"/>
+  </g>
+  <!-- Flow A (blue): staircase top-left to mid -->
+  <path d="M 80 80 L 160 80 L 160 160 L 240 160" class="path-a"/>
+  <circle cx="80" cy="80" r="20" class="dot-a"/>
+  <circle cx="240" cy="160" r="20" class="dot-a"/>
+  <!-- Flow B (orange): L-shape top-right -->
+  <path d="M 240 80 L 320 80 L 320 160 L 320 240" class="path-b"/>
+  <circle cx="240" cy="80" r="20" class="dot-b"/>
+  <circle cx="320" cy="240" r="20" class="dot-b"/>
+  <!-- Flow C (green): L-shape bottom-left -->
+  <path d="M 80 160 L 80 240 L 80 320 L 160 320" class="path-c"/>
+  <circle cx="80" cy="160" r="20" class="dot-c"/>
+  <circle cx="160" cy="320" r="20" class="dot-c"/>
+  <!-- Flow D (violet): staircase mid to bottom-right -->
+  <path d="M 160 240 L 240 240 L 240 320 L 320 320" class="path-d"/>
+  <circle cx="160" cy="240" r="20" class="dot-d"/>
+  <circle cx="320" cy="320" r="20" class="dot-d"/>
+</svg>
